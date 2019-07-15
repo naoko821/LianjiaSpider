@@ -15,12 +15,12 @@ class cheng_jiao_data_analysis:
         self.chengjiao_product_entity = {}
         self.chengjiao_constant = chengjiao_constant()
 
-    def chengjiao_product(self, json):
+    def chengjiao_product(self, json, city):
         if json is not None:
             basic_info = json.get('basic_info')
             if basic_info.get('title') is not None:
                 self.chengjiao_product_entity['标题'] = str(basic_info.get('title'))
-            self.chengjiao_product_entity['城市'] = '北京'
+            self.chengjiao_product_entity['城市'] = city
             # self.chengjiao_product_entity['链家编号'] = str(basic_info.get('house_code'])#重复值,不需要解析
             # self.chengjiao_product_entity['community_id'] = str(basic_info.get('community_id'])
             if basic_info.get('community_name') is not None:

@@ -6,6 +6,7 @@ import hashlib
 import json
 import sys
 import os
+import datetime
 
 sys.path.append(os.path.abspath(os.path.join(sys.argv[0], "../../..")))
 
@@ -15,9 +16,14 @@ from spider.generate_excle import generate_excle
 from chengjiao_constant import chengjiao_constant
 from spider.AgentAndProxies import GetIpProxy
 
+CITY_CODE = {'北京':'110000', '上海':'310000', '天津':'120000', '重庆':'500000'}
+
 
 class chengJiao:
-    def __init__(self):
+    def __init__(self, city):
+        if not city in CITY_CODE:
+            print "unknown city"
+        self.city = city
         # 爬取页数
         self.count = 300
         # 一页一共多少数据
@@ -29,7 +35,7 @@ class chengJiao:
         # 当前是第几页 从第0页开始
         self.current_page = 0
         # 由android JNI逆向得出的链家apk秘钥
-        # self.Authorization = '93273ef46a0b880faf4466c48f74878fcity_id=110000limit_count=10limit_offset=0request_ts=1511232061'
+        # self.Authorization = '93273ef46a0b880faf4466c48f74878fcity_id=%slimit_count=10limit_offset=0request_ts=1511232061'%(CITY_CODE[city])
         # 成交只需要Authorization网关认证
         self.headers = {
             # 'Page-Schema': 'tradedSearch%2Flist',
@@ -40,7 +46,7 @@ class chengJiao:
             # 'Lianjia-Channel': 'Android_Anzhi',
             # 'Lianjia-Device-Id': '6fc5da9bec827948',
             # 'Lianjia-Version': '8.2.1',
-            'Authorization': '93273ef46a0b880faf4466c48f74878fcity_id=110000limit_count=10limit_offset=0request_ts=1511232061',
+            'Authorization': '93273ef46a0b880faf4466c48f74878fcity_id=%slimit_count=10limit_offset=0request_ts=1511232061'%(CITY_CODE[self.city]),
             # 'Lianjia-Im-Version': '2.4.4',
             # 'Host': 'app.api.lianjia.com',
             # 'Connection': 'Keep-Alive',
@@ -51,12 +57,15 @@ class chengJiao:
 
     def start(self):
         # 爬取页数
-        self.count = input('输入请求页数:')
+        self.count = 1#300#input('输入请求页数:')
         # 一页一共多少数据
-        self.limit_count = input('输入每页请求多少数据:')
+        self.limit_count = 10#100#input('输入每页请求多少数据:')
         # 第几页（页数*一页一共多少数据） 起始数据
-        self.limit_offset = input('输入请求起始数据:')
-        excleName = raw_input('输入要保存的文件名称:')
+        self.limit_offset = 0#input('输入请求起始数据:')
+        dirName = 'chengjiao-%s'%(self.city)
+        if not os.path.exists(dirName):
+            os.makedirs(dirName)
+        excleName = 'chengjiao-%s/chengjiao-%s-%s'%(self.city, datetime.datetime.now().date(), self.city)#raw_input('输入要保存的文件名称:')
 
         self.excle_init_title()
         for i in range(self.count):
@@ -69,14 +78,14 @@ class chengJiao:
     def request_url_list(self):
         self.limit_offset = self.limit_offset + self.limit_count
         self.request_ts = int(time.time())
-        source_Authorization = '93273ef46a0b880faf4466c48f74878fcity_id=110000limit_count=' + str(
+        source_Authorization = '93273ef46a0b880faf4466c48f74878fcity_id=%slimit_count='%(CITY_CODE[self.city]) + str(
             self.limit_count) + 'limit_offset=' + str(self.limit_offset) + 'request_ts=' + str(self.request_ts)
 
         # print source_Authorization
 
         self.generate_authorization(source_Authorization)
 
-        url = 'https://app.api.lianjia.com/house/chengjiao/search?city_id=110000&limit_offset=' + str(
+        url = 'https://app.api.lianjia.com/house/chengjiao/search?city_id=%s&limit_offset='%(CITY_CODE[self.city]) + str(
             self.limit_offset) + '&limit_count=' + str(self.limit_count) + '&request_ts=' + str(self.request_ts)
 
         # print headers.get('Authorization')
@@ -110,7 +119,7 @@ class chengJiao:
                 # print "result_product:" + result_product.text
 
                 product_json = json.loads(result_product.text, encoding='utf-8')
-                self.cheng_jiao_data_analysis.chengjiao_product(product_json.get('data'))
+                self.cheng_jiao_data_analysis.chengjiao_product(product_json.get('data'), city)
 
                 # 获取更多
                 self.request_ts = int(time.time())
@@ -154,6 +163,9 @@ class chengJiao:
             self.generate_excle.writeExclePositon(0, self.chengjiao_constant.chengjiao_source_data.get(itemKey),
                                                   itemKey)
 
-
-pachong = chengJiao()
+if len(sys.argv) > 1:
+    city = sys.argv[1]
+else:
+    city = '北京'
+pachong = chengJiao(city)
 pachong.start()
