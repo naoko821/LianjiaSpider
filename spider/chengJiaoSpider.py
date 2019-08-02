@@ -5,6 +5,8 @@ import requests
 import sys
 import lxml
 import datetime
+import os
+
 from bs4 import BeautifulSoup
 from generate_excle import generate_excle
 from AgentAndProxies import hds
@@ -41,7 +43,10 @@ class chengJiaoInfo:
             self.get_allurl(i)
             print(i)
         date = str(datetime.datetime.now().date())
-        self.generate_excle.saveExcle('chengjiao-%s/%s-%s.xls'%(self.city, date, self.city))
+        dirName = 'chengjiao-%s'%self.city
+        if not os.path.exists(dirName):
+            os.makedirs(dirName)
+        self.generate_excle.saveExcle('%s/%s-%s.xls'%(dirName, date, self.city))
 
     def get_allurl(self, generate_allurl):
         geturl = self.requestUrlForRe(generate_allurl)
@@ -60,7 +65,7 @@ class chengJiaoInfo:
             soup = BeautifulSoup(res.text, 'lxml')
             self.infos['网址'] = re_get
             self.infos['标题'] = soup.title.text.split('_')[0]
-            self.infos['总价'] = soup.find(class_='dealTotalPrice').text
+            self.infos['售价(万)'] = soup.find(class_='dealTotalPrice').text
             self.infos['每平方售价'] = soup.find(class_='record_detail').text.split('元')[0][2:]
             partent = re.compile('<li><span class="label">(.*?)</span>(.*?)</li>')
             result = re.findall(partent, res.text)
@@ -82,6 +87,7 @@ class chengJiaoInfo:
                     self.infos['建成时间：年'] = item[1].strip()
                 else:
                     self.infos[item[0]] = item[1].strip()
+            self.infos['成交时间'] = '-'.join(soup.find(class_='wrapper').contents[1].text.split()[0].split('.'))
             row = index + (self.page - 1) * 30
             #self.infos['序号'] = row + 1
             self.infos['城市'] = self.city
@@ -141,5 +147,5 @@ class chengJiaoInfo:
                                                       item_valus)
 
 for city in ['北京', '上海', '深圳', '杭州']:
-    spider = chengJiaoInfo('深圳')
+    spider = chengJiaoInfo(city)
     spider.start()

@@ -79,6 +79,8 @@ class ElementConstant:
         self.data_constant['调价（次）'] = 34
         self.data_constant['浏览（次）'] = 35
         self.data_constant['套内面积'] = 36
+        self.data_constant['成交时间'] = 37
+        self.data_constant['售价(万)'] = 38        
         
     def column_position(self, temp_data):
         return self.data_constant.get(temp_data)
