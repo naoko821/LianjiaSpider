@@ -35,7 +35,7 @@ class chengJiaoInfo:
     # 开始函数
     def start(self):
         self.generate_excle.addSheetExcle(u'在售列表')
-        user_in_nub = 1#input('输入生成页数：')
+        user_in_nub = 100#input('输入生成页数：')
 
         for i in self.generate_allurl(user_in_nub):
             self.get_allurl(i)
