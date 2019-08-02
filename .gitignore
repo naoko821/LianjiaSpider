@@ -2,3 +2,8 @@
 .idea
 *.pyc
 *.xls
+chengjiao-*
+.ipynb*
+fig
+.DS_store
+*.csv

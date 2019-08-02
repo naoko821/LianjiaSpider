@@ -40,6 +40,13 @@ python LianjiaSpider/spider/salingInfoSpider.py
 
 ```
 
+爬取web界面成交内容 https://bj.lianjia.com/chengjiao/
+
+```
+python LianjiaSpider/spider/chengJiaoSpider.py
+
+```
+
 二.移动端数据爬取（在售，成交）
 
 基于链家app:https://bj.lianjia.com/ 针对其签名校验进行破解

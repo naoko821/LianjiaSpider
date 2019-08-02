@@ -11,7 +11,7 @@ if sys.getdefaultencoding() != defaultencoding:
 
 class generate_excle:
     def __init__(self):
-        print sys.getdefaultencoding()
+        print(sys.getdefaultencoding())
         if sys.getdefaultencoding() != 'utf-8':
             reload(sys)
             sys.setdefaultencoding('utf-8')

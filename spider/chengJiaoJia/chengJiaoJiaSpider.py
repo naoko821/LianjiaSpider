@@ -57,9 +57,9 @@ class chengJiao:
 
     def start(self):
         # 爬取页数
-        self.count = 1#300#input('输入请求页数:')
+        self.count = 300#input('输入请求页数:')
         # 一页一共多少数据
-        self.limit_count = 10#100#input('输入每页请求多少数据:')
+        self.limit_count = 100#input('输入每页请求多少数据:')
         # 第几页（页数*一页一共多少数据） 起始数据
         self.limit_offset = 0#input('输入请求起始数据:')
         dirName = 'chengjiao-%s'%(self.city)

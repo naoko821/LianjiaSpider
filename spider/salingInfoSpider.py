@@ -23,6 +23,7 @@ class salingInfo:
         self.elementConstant = ElementConstant()
         self.getIpProxy = GetIpProxy()
         self.url = "https://bj.lianjia.com/ershoufang/pg{}/"
+#        self.url = "https://bj.lianjia.com/chengjiao/pg{}/"
         self.infos = {}
         self.proxyServer = ()
         # 传参使用进行excle生成

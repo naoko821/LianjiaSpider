@@ -87,10 +87,13 @@ class GetIpProxy():
                 return False
 
     def get_random_ip(self):
-        for i in range(len(self.infos.keys())):
-            judge_ip_status = self.judge_ip(self.infos.keys()[i], self.infos.values()[i])
+        items = list(self.infos.items())
+        index =  list(range(len(items)))
+        random.shuffle(index)
+        for i in index:
+            judge_ip_status = self.judge_ip(items[i][0], items[i][1])
             if judge_ip_status:
-                return self.infos.items()[i]
+                return items[i]
 
     # 动态代理调用
     def requestUrlForRe(self, url, headers):

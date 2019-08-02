@@ -10,7 +10,7 @@ class ElementConstant:
 
     def init_source_data(self):
         #
-        self.data_constant['序号'] = 0  # 第一个需要进行排序操作
+        #self.data_constant['序号'] = 0  # 第一个需要进行排序操作
         # 链家编号 链家编号
         self.data_constant['链家编号'] = 1
         #
@@ -39,7 +39,7 @@ class ElementConstant:
         # 房屋户型 户型
         self.data_constant['房屋户型'] = 13
         # 朝向 朝向
-        self.data_constant['朝向'] = 14
+        self.data_constant['房屋朝向'] = 14
         # 梯户比例 梯户比例
         self.data_constant['梯户比例'] = 15
         # 房屋用途 房屋用途 15
@@ -57,13 +57,13 @@ class ElementConstant:
         # 供暖方式 供暖方式
         self.data_constant['供暖方式'] = 22
         # 产权所属 产权所属
-        self.data_constant['产权所属'] = 23
+        self.data_constant['房权所属'] = 23
         # 户型结构 户型结构 23
         self.data_constant['户型结构'] = 24
         # 配备电梯 配备电梯
         self.data_constant['配备电梯'] = 25
         # 所在楼层 楼层
-        self.data_constant['楼层'] = 26
+        self.data_constant['所在楼层'] = 26
         # 房屋年限 房屋年限
         self.data_constant['房屋年限'] = 27
         # 标题 标题
@@ -73,8 +73,13 @@ class ElementConstant:
         # 关注房源 关注（人）
         self.data_constant['关注（人）'] = 30
         # 看过房源 看过房源：人
-        self.data_constant['看过房源：人'] = 31
-
+        self.data_constant['带看（次）'] = 31
+        self.data_constant['挂牌价格（万）'] = 32
+        self.data_constant['成交周期（天）'] = 33
+        self.data_constant['调价（次）'] = 34
+        self.data_constant['浏览（次）'] = 35
+        self.data_constant['套内面积'] = 36
+        
     def column_position(self, temp_data):
         return self.data_constant.get(temp_data)
 
