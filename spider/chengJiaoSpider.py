@@ -16,18 +16,20 @@ from model.ElementConstant import ElementConstant
 cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz'}
 class chengJiaoInfo:
     # 初始化构造函数
-    def __init__(self, city):
+    def __init__(self, city, url = None):
         self.city = city
         self.elementConstant = ElementConstant()
         self.getIpProxy = GetIpProxy()
 #        self.url = "https://bj.lianjia.com/ershoufang/pg{}/"
-        self.url = "https://%s.lianjia.com/chengjiao/pg{}/"%cityMap[self.city]
+        if url == None:
+            self.url = "https://%s.lianjia.com/chengjiao/pg{}/"%cityMap[self.city]
+        else:
+            self.url = url
         self.infos = {}
         self.proxyServer = ()
         # 传参使用进行excle生成
         self.generate_excle = generate_excle()
         self.elementConstant = ElementConstant()
-
     # 生成需要生成页数的链接
     def generate_allurl(self, user_in_nub):
         for url_next in range(1, int(user_in_nub) + 1):
@@ -46,7 +48,7 @@ class chengJiaoInfo:
         dirName = 'chengjiao-%s'%self.city
         if not os.path.exists(dirName):
             os.makedirs(dirName)
-        self.generate_excle.saveExcle('%s/%s-%s.xls'%(dirName, date, self.city))
+        self.generate_excle.saveExcle('%s/%s-%s.xls'%(dirName, date, self.city.split('/')[-1]))
 
     def get_allurl(self, generate_allurl):
         geturl = self.requestUrlForRe(generate_allurl)
@@ -146,6 +148,34 @@ class chengJiaoInfo:
                                                       self.elementConstant.data_constant.get(tempItemKey),
                                                       item_valus)
 
-for city in ['北京', '上海', '深圳', '杭州']:
-    spider = chengJiaoInfo(city)
-    spider.start()
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        for city in ['北京', '上海', '深圳', '杭州']:
+            spider = chengJiaoInfo(city)
+            spider.start()
+    elif len(sys.argv) == 2:
+        area = sys.argv[1]
+        if area == 'top':
+            xiaoquList = ['阜成门外大街', '帽儿胡同', '五路通北街', '灵光胡同', '三里河北街', '冰窖口胡同',
+           '大拐棒胡同', '六铺炕一区', '太仆寺']
+            for xiaoqu in xiaoquList: 
+                url = 'https://bj.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('top/'+xiaoqu, url)
+                spider.start()
+        if area == 'szsample':
+            xiaoquList = ['桃源村', '鼎太风华', '蔚蓝海岸', '城市山林', '阳光棕榈园', '梅林一村', '益田村']
+            for xiaoqu in xiaoquList: 
+                url = 'https://sz.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('topsample/'+xiaoqu, url)
+                spider.start()
+        else:
+            url = 'https://bj.lianjia.com/chengjiao/pg{}rs%s/'%area
+            spider = chengJiaoInfo(area, url)
+            spider.start()
+    elif len(sys.argv) == 3:
+        city = sys.argv[1]
+        area = sys.argv[2]
+        url = 'https://%s.lianjia.com/chengjiao/pg{}rs%s/'%(city, area)
+        spider = chengJiaoInfo(area, url)
+        spider.start()
+        
