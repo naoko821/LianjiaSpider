@@ -2,7 +2,7 @@
 .idea
 *.pyc
 *.xls
-chengjiao-*
+data/chengjiao-*
 .ipynb*
 fig
 .DS_store

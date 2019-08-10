@@ -6,7 +6,7 @@ import sys
 import lxml
 import datetime
 import os
-
+from multiprocessing import Pool
 from bs4 import BeautifulSoup
 from generate_excle import generate_excle
 from AgentAndProxies import hds
@@ -45,7 +45,7 @@ class chengJiaoInfo:
             self.get_allurl(i)
             print(i)
         date = str(datetime.datetime.now().date())
-        dirName = 'chengjiao-%s'%self.city
+        dirName = 'data/chengjiao-%s'%self.city
         if not os.path.exists(dirName):
             os.makedirs(dirName)
         self.generate_excle.saveExcle('%s/%s-%s.xls'%(dirName, date, self.city.split('/')[-1]))
@@ -168,6 +168,14 @@ if __name__ == '__main__':
                 url = 'https://sz.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
                 spider = chengJiaoInfo('topsample/'+xiaoqu, url)
                 spider.start()
+        if area == 'all':
+            xiaoquList = open('xiaoqu.txt').read().split()
+            def getXiaoqu(xiaoqu):
+                url = 'https://bj.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('all/'+xiaoqu, url)
+                spider.start()
+            p = Pool()
+            p.map(getXiaoqu, xiaoquList)
         else:
             url = 'https://bj.lianjia.com/chengjiao/pg{}rs%s/'%area
             spider = chengJiaoInfo(area, url)
@@ -175,7 +183,10 @@ if __name__ == '__main__':
     elif len(sys.argv) == 3:
         city = sys.argv[1]
         area = sys.argv[2]
-        url = 'https://%s.lianjia.com/chengjiao/pg{}rs%s/'%(city, area)
+        if city == 'nb':
+            url = 'https://%s.lianjia.com/chengjiao/pg{}/'%(city)
+        else:
+            url = 'https://%s.lianjia.com/chengjiao/pg{}rs%s/'%(city, area)
         spider = chengJiaoInfo(area, url)
         spider.start()
         
