@@ -7,6 +7,8 @@ import matplotlib
 from matplotlib import gridspec
 from pypinyin import pinyin
 import numpy as np
+from matplotlib.font_manager import FontProperties
+font=FontProperties(fname='/Library/Fonts/Songti.ttc',size=18)
 
 def read(city):
     dfs = []
@@ -110,7 +112,7 @@ def get_moving_average(res, ma_length):
     return pd.DataFrame({'volume':volume_ma, 'median_price':median_ma,  'mean_price':mean_ma}, 
                         index = res.index[ma_length:])
 
-def plot(res, title, MA, ma_length, start_date = None):
+def plot(res, city, title, MA, ma_length, start_date = None):
     if  len(res)< 10 + ma_length:
         return
     if MA == True:
@@ -126,7 +128,7 @@ def plot(res, title, MA, ma_length, start_date = None):
     ax0.plot(res['mean_price'])
     ax0.legend(['median price','mean price'])
     plt.setp( ax0.get_xticklabels(), visible=False)
-    plt.title(title)
+    plt.title(title, fontproperties = font)
     xticks = ax0.xaxis.get_major_ticks()
     interval = len(xticks)// 10
     ax0.set_xticks(ax0.get_xticks()[::interval])
@@ -147,27 +149,19 @@ def plot(res, title, MA, ma_length, start_date = None):
     plt.show()
     plt.close()
 
-def plot_district(df, district ='朝阳', ma_length = -1, start_date = None):
+def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = None):
     gp = df.loc[df['下辖区']==district].groupby(['成交时间'])
     res = pd.DataFrame({'volume':gp.size(),'mean_price':gp['成交价(元/平)'].mean(),
                         'median_price':gp['成交价(元/平)'].median()})
     res = res.iloc[:len(res) -1,:]
     print(district)
-    title = pinyin(district)
-    if district == '朝阳':
-        title = pinyin('炒阳')
-    elif district == '长宁':
-        title = pinyin('昌宁')
-    elif district == '闵行':
-        title = pinyin('闵杭')
-
-    title = " ".join([x[0] for x in title])
-    plot(res, title, MA, ma_length, start_date)
-def plot_df(df, title):  
+    title = district
+    plot(res, city, title, MA, ma_length, start_date)
+def plot_df(df, city, title, MA, ma_length):  
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
     res = res.iloc[:len(res)-1,:]
-    plot(res, title, MA, ma_length)
+    plot(res, city, title, MA, ma_length)
     
 def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     ress = []
@@ -190,8 +184,8 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     for res in ress:
         res = res.loc[res.index.isin(index)]
         plt.plot(res['mean_price']/res['mean_price'].iloc[0])
-    plt.legend(legends)
-    plt.title(title)
+    plt.legend(legends, prop = font)
+    plt.title(title, fontproperties = font)
     ax0 = plt.gca()
     xticks = ax0.xaxis.get_major_ticks()
     interval = len(xticks)// 10
