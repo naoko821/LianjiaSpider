@@ -8,7 +8,7 @@ from matplotlib import gridspec
 from pypinyin import pinyin
 import numpy as np
 from matplotlib.font_manager import FontProperties
-font=FontProperties(fname='/Library/Fonts/Songti.ttc',size=18)
+font=FontProperties(fname='font/Songti.ttc',size=18)
 
 def read(city):
     dfs = []
