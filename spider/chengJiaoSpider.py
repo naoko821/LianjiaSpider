@@ -13,7 +13,8 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 
-cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'gz', '宁波':'nb'}
+cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'gz', 
+           '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd'}
 class chengJiaoInfo:
     # 初始化构造函数
     def __init__(self, city, url = None):
@@ -42,8 +43,11 @@ class chengJiaoInfo:
         user_in_nub = 100#input('输入生成页数：')
 
         for i in self.generate_allurl(user_in_nub):
-            self.get_allurl(i)
-            print(i)
+            try:
+                self.get_allurl(i)
+                print(i)
+            except:
+                print(i, 'failed')
         date = str(datetime.datetime.now().date())
         dirName = 'data/chengjiao-%s'%self.city
         if not os.path.exists(dirName):
@@ -150,7 +154,7 @@ class chengJiaoInfo:
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        city_list = ['北京', '上海', '深圳', '杭州', '广州']
+        city_list = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '成都']
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
@@ -201,11 +205,19 @@ if __name__ == '__main__':
                 spider.start()
             p = Pool()
             p.map(getXiaoqu, xiaoquList)
-        elif area == 'allcs':
-            districts = ['雨花', '望城', '天心', '芙蓉', '开福', '长沙县', '岳麓']
+        elif area == 'allhz':
+            xiaoquList = open('hzxiaoqu.txt').read().split()
+            def getXiaoqu(xiaoqu):
+                url = 'https://hz.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('allhz/'+xiaoqu, url)
+                spider.start()
+            p = Pool()
+            p.map(getXiaoqu, xiaoquList)
+        elif area == 'allxm':
+            districts = ['集美', '海沧', '思明', '湖里', '翔安', '同安']
             def getDistrict(district):
-                url = 'https://cs.lianjia.com/chengjiao/pg{}rs%s/'%district
-                spider = chengJiaoInfo('allcs/'+district, url)
+                url = 'https://xm.lianjia.com/chengjiao/pg{}rs%s/'%district
+                spider = chengJiaoInfo('allxm/'+district, url)
                 spider.start()
             p = Pool()
             p.map(getDistrict, districts)

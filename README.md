@@ -1,9 +1,5 @@
 # 链家 （python）爬虫  成交数据 及 在售数据 爬取
 
-开源地址：
-https://github.com/AnyMarvel/LianjiaSpider
-https://gitee.com/dssljt/LianjiaSpider
-
 依赖包 lxml requests BeautifulSoup xlwt xlrd Bs4
 
 mac or linux :
@@ -22,6 +18,7 @@ jsonSource: 链家客户端json传内容样本，包含（成交商品列表页�
 
 spider：链家爬虫脚本（python脚本）（爬取PC端在线数据，移动端在售数据和成交数据）
 
+爬虫脚本基于python2.7，jupyter-notebook基于python3
 
 #前言：链家数据爬虫，本文采用两种方式
 
@@ -68,6 +65,8 @@ python LianjiaSpider/spider/zaishou/chengJiaoJiaSpider.py
 python LianjiaSpider/spider/Spider_Thread_Manager.py
 ```
 
+三.jupyter-notebook分析
+用jupyter-notebook打开analysis.ipynb或者 单价yinzi.ipynb
 
 Copyright 2016 Square, Inc.
 
