@@ -66,7 +66,8 @@ python LianjiaSpider/spider/Spider_Thread_Manager.py
 ```
 
 三.jupyter-notebook分析
-用jupyter-notebook打开analysis.ipynb或者 单价yinzi.ipynb
+
+用jupyter-notebook打开analysis.ipynb或者 单价因子.ipynb
 
 Copyright 2016 Square, Inc.
 
