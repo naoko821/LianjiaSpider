@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
+import datetime
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -96,29 +97,64 @@ ma_length = 30
 start_date = '2017-01-01'
 city = 'default'
 def get_moving_average(res, ma_length):
+    startDate = datetime.datetime.strptime(res.index[0],'%Y-%m-%d')
+    endDate = datetime.datetime.strptime(res.index[-1],'%Y-%m-%d')
+    print(startDate, endDate)
+    date_range=[str(x.date()) for x in pd.date_range(startDate, endDate)]
     volume_ma = []
     median_ma = []
     mean_ma = []
-    for i in range(len(res) - ma_length):
-        volume_ele = sum(res['volume'].iloc[i:i+ma_length])
+
+    for i in range(len(date_range) - ma_length):
+        interval_data = res.loc[(res.index >= date_range[i]) & (res.index <= date_range[i+ma_length])]
+        volume_ele = sum(interval_data['volume'])
         median_ele = 0
         mean_ele = 0
-        for j in range(i, i + ma_length):
-            median_ele += res['volume'].iloc[j] * res['median_price'].iloc[j]
-            mean_ele += res['volume'].iloc[j] * res['mean_price'].iloc[j]
-        volume_ma.append(volume_ele)    
-        median_ma.append(median_ele/volume_ele)
-        mean_ma.append(mean_ele/volume_ele)
+        for index, row in interval_data.iterrows():
+            median_ele += row['volume'] * row['median_price']
+            mean_ele += row['volume'] * row['mean_price']
+        volume_ma.append(volume_ele)
+        if volume_ele == 0:
+            median_ma.append(median_ma[-1])
+            mean_ma.append(mean_ma[-1])
+        else:
+            median_ma.append(median_ele/volume_ele)
+            mean_ma.append(mean_ele/volume_ele)
     return pd.DataFrame({'volume':volume_ma, 'median_price':median_ma,  'mean_price':mean_ma}, 
-                        index = res.index[ma_length:])
+                        index = date_range[ma_length:])
 
+def resetXticks(ax, res):
+    labels = res.index
+    xticks = ax.get_xticks()
+    if len(xticks) < 180:
+        interval = len(xticks)// 10
+        target_xticks = xticks[::interval]
+        last_index = interval * 10 - 1
+    else:
+        target_xticks = []
+        last_index = 0
+        month_mark = set()
+        for i in range(len(labels)):
+            label = labels[i]
+            tick = xticks[i]
+            (year, month, day) = label.split('-')
+            if month in ['01', '04', '07', '10'] and '-'.join([year, month]) not in month_mark:
+                month_mark.add('-'.join([year,month]))
+                last_index = i
+                target_xticks.append(tick)
+    if len(res) - last_index < 10:
+        target_xticks = target_xticks[:-1] + [xticks[-1]]
+    else:
+        target_xticks = target_xticks + [xticks[-1]]
+    ax.set_xticks(target_xticks)
+    
 def plot(res, city, title, MA, ma_length, start_date = None):
     if  len(res)< 10 + ma_length:
         return
     if MA == True:
         res = get_moving_average(res, ma_length)
     if start_date is not None:
-        res = res.loc[res.index > start_date,:]
+        res = res.loc[res.index >= start_date,:]
     plt.rcParams['font.sans-serif']=['SimHei']
     matplotlib.rc('font', size=18)
     matplotlib.rcParams['figure.figsize'] = [15, 10]
@@ -127,20 +163,14 @@ def plot(res, city, title, MA, ma_length, start_date = None):
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
     ax0.legend(['median price','mean price'])
+    resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
-    plt.title(title, fontproperties = font)
-    xticks = ax0.xaxis.get_major_ticks()
-    interval = len(xticks)// 10
-    ax0.set_xticks(ax0.get_xticks()[::interval])
     plt.grid(True)
+    plt.title(title, fontproperties = font)
+    #重画x轴
     ax1 = plt.subplot(gs[1])
     ax1.bar(res.index, res['volume'])
-    xticks = ax1.xaxis.get_major_ticks()
-    interval = len(xticks)// 10
-    xticks = ax1.get_xticks()
-    target_xticks = xticks[::interval]
-    target_xticks = target_xticks[:-1] + [xticks[-1]]
-    ax1.set_xticks(target_xticks)
+    resetXticks(ax1, res)
     plt.xticks(rotation=30)
     dir_name = os.path.join('fig', city)
     if not os.path.exists(dir_name):
@@ -174,7 +204,7 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
         if ma_length != -1:
             res = get_moving_average(res, ma_length)
         if start_date is not None:
-            res = res.loc[res.index > start_date,:]
+            res = res.loc[res.index >= start_date,:]
         ress.append(res)
     
     plt.rcParams['font.sans-serif']=['SimHei']

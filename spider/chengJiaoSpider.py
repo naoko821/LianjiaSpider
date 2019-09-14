@@ -14,7 +14,7 @@ from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 
 cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'gz', 
-           '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd'}
+           '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf'}
 class chengJiaoInfo:
     # 初始化构造函数
     def __init__(self, city, url = None):
@@ -154,7 +154,7 @@ class chengJiaoInfo:
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        city_list = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '成都']
+        city_list = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '成都', '宁波']
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
@@ -213,14 +213,18 @@ if __name__ == '__main__':
                 spider.start()
             p = Pool()
             p.map(getXiaoqu, xiaoquList)
-        elif area == 'allxm':
-            districts = ['集美', '海沧', '思明', '湖里', '翔安', '同安']
-            def getDistrict(district):
-                url = 'https://xm.lianjia.com/chengjiao/pg{}rs%s/'%district
-                spider = chengJiaoInfo('allxm/'+district, url)
+        elif area == 'allcd':
+            xiaoquList = open('cdxiaoqu.txt').read().split()
+            done = os.listdir('data/chengjiao-allcd/')
+            xiaoquList = list(set(xiaoquList) - set(done))
+            print(len(xiaoquList))
+            def getXiaoqu(xiaoqu):
+                url = 'https://cd.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('allcd/'+xiaoqu, url)
                 spider.start()
             p = Pool()
-            p.map(getDistrict, districts)
+            p.map(getXiaoqu, xiaoquList)
+            
         elif area == 'allgz':
             xiaoquList = open('gzxiaoqu.txt').read().split()
             done = os.listdir('data/chengjiao-allgz/')
@@ -239,7 +243,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 3:
         city = sys.argv[1]
         area = sys.argv[2]
-        if city in ['nb', 'gz', 'cs']:
+        if city in ['nb', 'gz', 'cs', 'hf']:
             url = 'https://%s.lianjia.com/chengjiao/pg{}/'%(city)
         else:
             url = 'https://%s.lianjia.com/chengjiao/pg{}rs%s/'%(city, area)
