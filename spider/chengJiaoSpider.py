@@ -154,7 +154,7 @@ class chengJiaoInfo:
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        city_list = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '成都', '宁波']
+        city_list = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '成都', '宁波', '合肥']
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
@@ -222,17 +222,35 @@ if __name__ == '__main__':
                 url = 'https://cd.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
                 spider = chengJiaoInfo('allcd/'+xiaoqu, url)
                 spider.start()
-            p = Pool()
+            p = Pool(20)
             p.map(getXiaoqu, xiaoquList)
-            
-        elif area == 'allgz':
-            xiaoquList = open('gzxiaoqu.txt').read().split()
-            done = os.listdir('data/chengjiao-allgz/')
+        elif area == 'allcq':
+            xiaoquList = open('cqxiaoqu.txt').read().split()
+            done = os.listdir('data/chengjiao-allcq/')
             xiaoquList = list(set(xiaoquList) - set(done))
             print(len(xiaoquList))
             def getXiaoqu(xiaoqu):
-                url = 'https://gz.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
-                spider = chengJiaoInfo('allgz/'+xiaoqu, url)
+                url = 'https://cq.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('allcq/'+xiaoqu, url)
+                spider.start()
+            p = Pool()
+            p.map(getXiaoqu, xiaoquList)
+        elif area == 'allsjz':
+            xiaoquList = ['开发区', '长安', '鹿泉', '元氏县', '裕华', '桥西', '正定', '新华', '藁城', '栾城', '平山']
+            def getXiaoqu(xiaoqu):
+                url = 'https://sjz.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('allsjz/'+xiaoqu, url)
+                spider.start()
+            p = Pool()
+            p.map(getXiaoqu, xiaoquList)
+        elif area == 'allwh':
+            xiaoquList = ['江岸', '武昌', '江汉', '东湖高新', '沌口开发区', '蔡甸', '洪山', '东西湖', '新洲', '汉阳', '黄陂', '江夏', '青山', '硚口', '汉南']
+            done = os.listdir('data/chengjiao-allwh/')
+            xiaoquList = list(set(xiaoquList) - set(done))
+            print(len(xiaoquList))
+            def getXiaoqu(xiaoqu):
+                url = 'https://wh.lianjia.com/chengjiao/pg{}rs%s/'%xiaoqu
+                spider = chengJiaoInfo('allwh/'+xiaoqu, url)
                 spider.start()
             p = Pool()
             p.map(getXiaoqu, xiaoquList)
@@ -243,7 +261,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 3:
         city = sys.argv[1]
         area = sys.argv[2]
-        if city in ['nb', 'gz', 'cs', 'hf']:
+        if city in ['nb', 'gz', 'cs', 'hf', 'cq', 'sjz', 'wh']:
             url = 'https://%s.lianjia.com/chengjiao/pg{}/'%(city)
         else:
             url = 'https://%s.lianjia.com/chengjiao/pg{}rs%s/'%(city, area)

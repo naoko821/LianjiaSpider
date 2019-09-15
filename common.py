@@ -120,28 +120,35 @@ def get_moving_average(res, ma_length):
         else:
             median_ma.append(median_ele/volume_ele)
             mean_ma.append(mean_ele/volume_ele)
+    last_index = 0
+    for i in range(len(volume_ma)):
+        if volume_ma[i] < ma_length / 2:
+            last_index = i
+    volume_ma = volume_ma[last_index+1:]
+    median_ma = median_ma[last_index+1:]
+    mean_ma = mean_ma[last_index+1:]
     return pd.DataFrame({'volume':volume_ma, 'median_price':median_ma,  'mean_price':mean_ma}, 
-                        index = date_range[ma_length:])
+                        index = date_range[ma_length+last_index + 1:])
 
 def resetXticks(ax, res):
     labels = res.index
     xticks = ax.get_xticks()
+    
     if len(xticks) < 180:
-        interval = len(xticks)// 10
-        target_xticks = xticks[::interval]
-        last_index = interval * 10 - 1
+        tick_month = ['%0.2d'%i for i in range(1, 13)]
     else:
-        target_xticks = []
-        last_index = 0
-        month_mark = set()
-        for i in range(len(labels)):
-            label = labels[i]
-            tick = xticks[i]
-            (year, month, day) = label.split('-')
-            if month in ['01', '04', '07', '10'] and '-'.join([year, month]) not in month_mark:
-                month_mark.add('-'.join([year,month]))
-                last_index = i
-                target_xticks.append(tick)
+        tick_month = ['%0.2d'%i for i in range(1, 13, 3)]
+    target_xticks = []
+    last_index = 0
+    month_mark = set()
+    for i in range(len(labels)):
+        label = labels[i]
+        tick = xticks[i]
+        (year, month, day) = label.split('-')
+        if month in tick_month and '-'.join([year, month]) not in month_mark:
+            month_mark.add('-'.join([year,month]))
+            last_index = i
+            target_xticks.append(tick)
     if len(res) - last_index < 10:
         target_xticks = target_xticks[:-1] + [xticks[-1]]
     else:
