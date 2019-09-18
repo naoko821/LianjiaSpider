@@ -42,19 +42,24 @@ class salingInfo:
         user_in_nub = input('输入生成页数：')
 
         for i in self.generate_allurl(user_in_nub):
-            self.get_allurl(i)
-            print(i)
+            try:
+                self.get_allurl(i)
+                print(i)
+            except Exception, e:
+                print(e)
+                print(i, 'failed')
         self.generate_excle.saveExcle('LianJiaSpider.xls')
 
     def get_allurl(self, generate_allurl):
         geturl = self.requestUrlForRe(generate_allurl)
+        print geturl.status_code
         if geturl.status_code == 200:
             # 提取title跳转地址　对应每个商品
-            re_set = re.compile('<li.*?<a.*?class="img.*?".*?href="(.*?)"')
+            re_set = re.compile('<div.*?class="item".*?data-houseid.*?<a.*?class="img.*?".*?href="(.*?)"')
             re_get = re.findall(re_set, geturl.text)
             for index in range(len(re_get)):
+                print re_get[index] 
                 self.open_url(re_get[index], index)
-                print re_get[index]
 
     def open_url(self, re_get, index):
         res = self.requestUrlForRe(re_get)
