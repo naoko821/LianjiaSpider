@@ -134,7 +134,7 @@ def resetXticks(ax, res):
     labels = res.index
     xticks = ax.get_xticks()
     
-    if len(xticks) < 180:
+    if len(xticks) < 366:
         tick_month = ['%0.2d'%i for i in range(1, 13)]
     else:
         tick_month = ['%0.2d'%i for i in range(1, 13, 3)]
@@ -162,6 +162,8 @@ def plot(res, city, title, MA, ma_length, start_date = None):
         res = get_moving_average(res, ma_length)
     if start_date is not None:
         res = res.loc[res.index >= start_date,:]
+    if len(res) < 10:
+        return 
     plt.rcParams['font.sans-serif']=['SimHei']
     matplotlib.rc('font', size=18)
     matplotlib.rcParams['figure.figsize'] = [15, 10]
@@ -176,7 +178,9 @@ def plot(res, city, title, MA, ma_length, start_date = None):
     plt.title(title, fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
-    ax1.bar(res.index, res['volume'])
+    #ax1.bar(res.index, res['volume'])
+    ax1.fill_between(res.index, res['volume'])
+    ax1.legend(['volume'])
     resetXticks(ax1, res)
     plt.xticks(rotation=30)
     dir_name = os.path.join('fig', city)
