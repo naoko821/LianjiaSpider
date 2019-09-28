@@ -171,7 +171,7 @@ def plot(res, city, title, MA, ma_length, start_date = None):
     ax0 = plt.subplot(gs[0])
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
-    ax0.legend(['median price','mean price'])
+    ax0.legend(['median price=%.0f'%res['median_price'][-1],'mean price=%.0f'%res['mean_price'][-1]])
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
@@ -209,7 +209,7 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     for df in dfs:
         gp = df.groupby(['成交时间'])['成交价(元/平)']
         res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
-        res = res.iloc[:len(res)-1,:]
+        res = res.iloc[:len(res),:]
         if  len(res)< 10 + ma_length:
             return
         if ma_length != -1:
