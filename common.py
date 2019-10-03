@@ -87,6 +87,9 @@ def read(city):
     df = pd.concat(dfs)
     df = df.drop_duplicates(subset=['链家编号'])
     df = df.loc[df['成交价(元/平)']> 1000]
+    df = df.loc[~df['土地年限'].str.contains('40')]
+    df = df.loc[~df['土地年限'].str.contains('50')]
+    df = df.set_index('链家编号')
     print(len(df))
     return df
 
@@ -96,7 +99,7 @@ MA = True
 ma_length = 30
 start_date = '2017-01-01'
 city = 'default'
-def get_moving_average(res, ma_length):
+def get_moving_average(res, ma_length, keep_all = False):
     startDate = datetime.datetime.strptime(res.index[0],'%Y-%m-%d')
     endDate = datetime.datetime.strptime(res.index[-1],'%Y-%m-%d')
     print(startDate, endDate)
@@ -121,9 +124,10 @@ def get_moving_average(res, ma_length):
             median_ma.append(median_ele/volume_ele)
             mean_ma.append(mean_ele/volume_ele)
     last_index = 0
-    for i in range(len(volume_ma)):
-        if volume_ma[i] < ma_length / 2:
-            last_index = i
+    if keep_all == False:
+        for i in range(len(volume_ma)):
+            if volume_ma[i] < ma_length / 2:
+                last_index = i
     volume_ma = volume_ma[last_index+1:]
     median_ma = median_ma[last_index+1:]
     mean_ma = mean_ma[last_index+1:]
@@ -155,18 +159,18 @@ def resetXticks(ax, res):
         target_xticks = target_xticks + [xticks[-1]]
     ax.set_xticks(target_xticks)
     
-def plot(res, city, title, MA, ma_length, start_date = None):
-    if  len(res)< 10 + ma_length:
+def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep_all = False):
+    if  force == False and len(res)< 10 + ma_length:
         return
     if MA == True:
-        res = get_moving_average(res, ma_length)
+        res = get_moving_average(res, ma_length, keep_all)
     if start_date is not None:
         res = res.loc[res.index >= start_date,:]
-    if len(res) < 10:
+    if force == False and len(res) < 10:
         return 
     plt.rcParams['font.sans-serif']=['SimHei']
     matplotlib.rc('font', size=18)
-    matplotlib.rcParams['figure.figsize'] = [15, 10]
+    matplotlib.rcParams['figure.figsize'] = [15, 15]
     gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1]) 
     ax0 = plt.subplot(gs[0])
     ax0.plot(res['median_price'])
@@ -182,12 +186,12 @@ def plot(res, city, title, MA, ma_length, start_date = None):
     ax1.fill_between(res.index, res['volume'])
     ax1.legend(['volume'])
     resetXticks(ax1, res)
-    plt.xticks(rotation=30)
+    plt.xticks(rotation=90)
     dir_name = os.path.join('fig', city)
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
     plt.savefig(os.path.join(dir_name, title +'.png'))
-    plt.show()
+    #plt.show()
     plt.close()
 
 def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = None):
@@ -198,11 +202,11 @@ def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = Non
     print(district)
     title = district
     plot(res, city, title, MA, ma_length, start_date)
-def plot_df(df, city, title, MA, ma_length):  
+def plot_df(df, city, title, MA, ma_length, start_date = None, force = False):  
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
-    res = res.iloc[:len(res)-1,:]
-    plot(res, city, title, MA, ma_length)
+    res = res.iloc[:len(res),:]
+    plot(res, city, title, MA, ma_length, start_date, force)
     
 def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     ress = []
