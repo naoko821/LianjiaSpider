@@ -4,11 +4,13 @@
 
 mac or linux :
 
-sudo pip install lxml requests BeautifulSoup xlwt xlrd Bs4
+sudo pip2.7 install lxml requests BeautifulSoup xlwt xlrd Bs4
 
 windows:
 
-pip install lxml requests BeautifulSoup xlwt xlrd Bs4
+pip2.7 install lxml requests BeautifulSoup xlwt xlrd Bs4
+
+分析程序需要安装anaconda3.
 
 项目目录说明:
 
@@ -33,14 +35,14 @@ spider：链家爬虫脚本（python脚本）（爬取PC端在线数据，移动
 爬取web界面在售内容 https://bj.lianjia.com/ershoufang/ 仅爬取在售内容
 
 ```
-python LianjiaSpider/spider/salingInfoSpider.py
+python2.7 LianjiaSpider/spider/salingInfoSpider.py
 
 ```
 
 爬取web界面成交内容 https://bj.lianjia.com/chengjiao/
 
 ```
-python LianjiaSpider/spider/chengJiaoSpider.py
+python2.7 LianjiaSpider/spider/chengJiaoSpider.py
 
 ```
 
@@ -52,22 +54,30 @@ python LianjiaSpider/spider/chengJiaoSpider.py
 
 在售数据爬取：
 ```
-python LianjiaSpider/spider/zaishou/zaiShouSpider.py
+python2.7 LianjiaSpider/spider/zaishou/zaiShouSpider.py
 ```
 成交数据爬取：
 ```
-python LianjiaSpider/spider/zaishou/chengJiaoJiaSpider.py
+python2.7 LianjiaSpider/spider/zaishou/chengJiaoJiaSpider.py
 ```
 
 
 在售及成交数据自动爬取：
 ```
-python LianjiaSpider/spider/Spider_Thread_Manager.py
+python2.7 LianjiaSpider/spider/Spider_Thread_Manager.py
 ```
 
 三.jupyter-notebook分析
 
-用jupyter-notebook打开analysis.ipynb或者 单价因子.ipynb
+安装anaconda3, 在终端中运行jupyter-notebook 然后在弹出网页中打开analysis.ipynb或者 单价因子.ipynb
+
+四.爬取小区数据并作图
+
+```
+python3 plotArea.py [city] [area]
+```
+
+然后在 fig/default目录里查看图片。
 
 Copyright 2016 Square, Inc.
 
