@@ -18,7 +18,7 @@ def read(city):
         files.sort()
         for f in files:
             fullPath = os.path.join(root, f)
-            print(fullPath)
+            #print(fullPath)
             if f.endswith('.xls'):
                 dfs.append(pd.read_excel(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
                                                                               '链家编号':str}))
@@ -90,7 +90,7 @@ def read(city):
     df = df.loc[~df['土地年限'].str.contains('40')]
     df = df.loc[~df['土地年限'].str.contains('50')]
     df = df.set_index('链家编号')
-    print(len(df))
+    #print(len(df))
     return df
 
 
@@ -102,7 +102,7 @@ city = 'default'
 def get_moving_average(res, ma_length, keep_all = False):
     startDate = datetime.datetime.strptime(res.index[0],'%Y-%m-%d')
     endDate = datetime.datetime.strptime(res.index[-1],'%Y-%m-%d')
-    print(startDate, endDate)
+    #print(startDate, endDate)
     date_range=[str(x.date()) for x in pd.date_range(startDate, endDate)]
     volume_ma = []
     median_ma = []
@@ -193,9 +193,13 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     plt.savefig(os.path.join(dir_name, title +'.png'))
     #plt.show()
     plt.close()
+    return res
 
 def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = None):
-    gp = df.loc[df['下辖区']==district].groupby(['成交时间'])
+    if district == '静安':
+        gp = df.loc[df['下辖区'].isin(set(['静安','闸北']))].groupby(['成交时间'])
+    else:
+        gp = df.loc[df['下辖区']==district].groupby(['成交时间'])
     res = pd.DataFrame({'volume':gp.size(),'mean_price':gp['成交价(元/平)'].mean(),
                         'median_price':gp['成交价(元/平)'].median()})
     res = res.iloc[:len(res) -1,:]
