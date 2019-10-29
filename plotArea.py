@@ -24,4 +24,4 @@ if __name__ == '__main__':
         area = sys.argv[2]
         plotArea(city, area)
     else:
-        print("usage: python2.7 fetchPlot.py [city] [area]")
+        print("usage: python3 plotArea.py [city] [area]")
