@@ -15,8 +15,8 @@ from model.ElementConstant import ElementConstant
 
 cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'gz', 
            '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf',
-          '石家庄':'sjz', '重庆':'cq', '青岛':'xa', '青岛':'qd', '南京':'nj',
-          '苏州':'su','大连':'dl', '无锡':'wx', '武汉':'wh', '无锡':'wx'}
+          '石家庄':'sjz', '重庆':'cq', '西安':'xa', '青岛':'qd', '南京':'nj',
+          '苏州':'su','大连':'dl', '无锡':'wx', '武汉':'wh', '保定':'bd', '温州':'wz'}
 districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口']}
 
 class chengJiaoInfo:
