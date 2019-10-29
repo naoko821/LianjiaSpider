@@ -184,7 +184,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
     ax1.fill_between(res.index, res['volume'])
-    ax1.legend(['volume'])
+    ax1.legend(['成交量'], prop = font)
     resetXticks(ax1, res)
     plt.xticks(rotation=90)
     dir_name = os.path.join('fig', city)
