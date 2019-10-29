@@ -175,7 +175,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax0 = plt.subplot(gs[0])
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
-    ax0.legend(['median price=%.0f'%res['median_price'][-1],'mean price=%.0f'%res['mean_price'][-1]])
+    ax0.legend(['中位数=%.0f'%res['median_price'][-1],'均价=%.0f'%res['mean_price'][-1]], prop = font)
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
@@ -190,6 +190,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     dir_name = os.path.join('fig', city)
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
+    plt.tight_layout()
     plt.savefig(os.path.join(dir_name, title +'.png'))
     #plt.show()
     plt.close()
@@ -203,7 +204,6 @@ def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = Non
     res = pd.DataFrame({'volume':gp.size(),'mean_price':gp['成交价(元/平)'].mean(),
                         'median_price':gp['成交价(元/平)'].median()})
     res = res.iloc[:len(res) -1,:]
-    print(district)
     title = district
     plot(res, city, title, MA, ma_length, start_date)
 def plot_df(df, city, title, MA, ma_length, start_date = None, force = False):  
