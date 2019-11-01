@@ -30,12 +30,13 @@ def makeCity(city):
     print(city)
     dirName = os.path.join(rootDir, city)
     files = os.listdir(dirName)
+    files.sort(reverse=False)
     img_html = ""
     for f in files:
         if city in f:
+            files.remove(f)
+            files = [f, *files]
             break
-    files.remove(f)
-    files = [f, *files]
     for f in files:
         img_html_ele = img_html_tmp.format(city=city, dirname=os.path.join(city, f)) + '\n'
         img_html += img_html_ele
@@ -52,5 +53,5 @@ for city in dirNames:
 def exec(cmd):
     print(cmd)
     os.system(cmd)
-exec('scp -r fig root@vps.yeshiwei.com:/var/www/html')
-exec('scp -r fangjia root@vps.yeshiwei.com:/var/www/html')
+exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
+exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fig')
