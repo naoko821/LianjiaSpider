@@ -153,7 +153,7 @@ def resetXticks(ax, res):
             month_mark.add('-'.join([year,month]))
             last_index = i
             target_xticks.append(tick)
-    if len(res) - last_index < 10:
+    if len(res) - last_index < 20:
         target_xticks = target_xticks[:-1] + [xticks[-1]]
     else:
         target_xticks = target_xticks + [xticks[-1]]
@@ -184,7 +184,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
     ax1.fill_between(res.index, res['volume'])
-    ax1.legend(['成交量'], prop = font)
+    ax1.legend(['30日成交量'], prop = font)
     resetXticks(ax1, res)
     plt.xticks(rotation=90)
     dir_name = os.path.join('fig', city)
@@ -203,7 +203,7 @@ def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = Non
         gp = df.loc[df['下辖区']==district].groupby(['成交时间'])
     res = pd.DataFrame({'volume':gp.size(),'mean_price':gp['成交价(元/平)'].mean(),
                         'median_price':gp['成交价(元/平)'].median()})
-    res = res.iloc[:len(res) -1,:]
+    res = res.iloc[:len(res),:]
     title = district
     plot(res, city, title, MA, ma_length, start_date)
 def plot_df(df, city, title, MA, ma_length, start_date = None, force = False):  
