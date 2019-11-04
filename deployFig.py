@@ -18,6 +18,7 @@ html_tmp = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ht
 <body style="align-content: center;">
 <p>
     {imghtml}
+<img alt="公众号" src="http://www.yeshiwei.com/gongzhonghao.jpeg">
 </p>
 </body>
 </html>'''
@@ -40,7 +41,7 @@ def makeCity(city):
     for f in files:
         img_html_ele = img_html_tmp.format(city=city, dirname=os.path.join(city, f)) + '\n'
         img_html += img_html_ele
-    html = html_tmp.replace('{标题}', city)
+    html = html_tmp.replace('{标题}', city + '分城区房价走势图')
     html = html.replace('{imghtml}', img_html)
     fp = open('fangjia/%s.html'%city, 'w')
     fp.write(html)
@@ -53,5 +54,5 @@ for city in dirNames:
 def exec(cmd):
     print(cmd)
     os.system(cmd)
-exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
-exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fig')
+#exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
+exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fangjia')
