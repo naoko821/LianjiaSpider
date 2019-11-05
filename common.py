@@ -164,10 +164,16 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
         return
     if MA == True:
         res = get_moving_average(res, ma_length, keep_all)
-    if start_date is not None:
-        res = res.loc[res.index >= start_date,:]
     if force == False and len(res) < 10:
         return 
+    if start_date is not None:
+        res = res.loc[res.index >= start_date,:]
+        if len(res) > 0 and res.index[0] > start_date:
+            date_range=[str(x.date()) for x in pd.date_range(start_date, res.index[0])]
+            date_range=[str(x.date()) for x in pd.date_range(start_date, res.index[0])]
+            padding = pd.DataFrame(columns = res.columns,index = date_range[:-1])
+            padding.volume = [0] * len(padding)
+            res = pd.concat([padding, res])
     plt.rcParams['font.sans-serif']=['SimHei']
     matplotlib.rc('font', size=18)
     matplotlib.rcParams['figure.figsize'] = [15, 15]
@@ -176,6 +182,8 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
     ax0.legend(['中位数=%.0f'%res['median_price'][-1],'均价=%.0f'%res['mean_price'][-1]], prop = font)
+    x1,x2,y1,y2 = ax0.axis()
+    ax0.axis((x1,x2,0,y2))
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
@@ -205,7 +213,7 @@ def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = Non
                         'median_price':gp['成交价(元/平)'].median()})
     res = res.iloc[:len(res),:]
     title = district
-    plot(res, city, title, MA, ma_length, start_date)
+    return plot(res, city, title, MA, ma_length, start_date)
 def plot_df(df, city, title, MA, ma_length, start_date = None, force = False):  
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
