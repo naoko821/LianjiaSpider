@@ -54,5 +54,5 @@ for city in dirNames:
 def exec(cmd):
     print(cmd)
     os.system(cmd)
-#exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
+exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
 exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fangjia')

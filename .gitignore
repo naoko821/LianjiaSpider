@@ -1,4 +1,5 @@
 *.idea
+rank/*
 .idea
 *.pyc
 *.xls
