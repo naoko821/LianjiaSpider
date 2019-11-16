@@ -51,7 +51,8 @@ def makeTable(res, cityLevel='城市', cityName = None):
     monthChange = {}
     drawDown = {}
     for city in res.keys():
-        if len(res[city]) < 30:
+        print("compute", city, "of", cityName)
+        if res[city] is None or len(res[city]) < 30:
             continue
         median[city] = int(res[city]['median_price'][-1])
         mean[city] = int(res[city]['mean_price'][-1])
