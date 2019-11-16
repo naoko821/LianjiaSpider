@@ -29,6 +29,8 @@ def read(city):
     dfs = []
     #统一格式
     for df in dfs0:
+        if 'Unnamed: 0' in df.columns:
+            continue
         df = df.rename(columns={'单价（元/平米）':'成交价(元/平)','所属小区':'小区','建筑面积：平米':'建筑面积',
                                '浏览(次)':'浏览（次）', '关注(人)':'关注（人）', '带看(次)':'带看（次）',
                                '所属下辖区':'下辖区', '房权所属':'产权所属', '房屋朝向':'朝向','调价（次）':'调价(次)',
@@ -82,13 +84,18 @@ def read(city):
             df['成交价(元/平)'] = pd.to_numeric(df['成交价(元/平)'], errors='coerse')
         except:
             pass
-        dfs.append(df)
+        if len(df) > 0:
+            dfs.append(df)
 
     df = pd.concat(dfs)
+    print(len(df))
     df = df.drop_duplicates(subset=['链家编号'])
+    print(len(df))
     df = df.loc[df['成交价(元/平)']> 1000]
-    df = df.loc[~df['土地年限'].str.contains('40')]
-    df = df.loc[~df['土地年限'].str.contains('50')]
+    print(len(df))
+    if city not in ['重庆', 'allcq', '南京']:
+        df = df.loc[~df['土地年限'].str.contains('40')]
+        df = df.loc[~df['土地年限'].str.contains('50')]
     df = df.set_index('链家编号')
     #print(len(df))
     return df
@@ -161,11 +168,11 @@ def resetXticks(ax, res):
     
 def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep_all = False):
     if  force == False and len(res)< 10 + ma_length:
-        return
+        return pd.DataFrame()
     if MA == True:
         res = get_moving_average(res, ma_length, keep_all)
     if force == False and len(res) < 10:
-        return 
+        return pd.DataFrame()
     if start_date is not None:
         res = res.loc[res.index >= start_date,:]
         if len(res) > 0 and res.index[0] > start_date:
