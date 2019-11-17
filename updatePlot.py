@@ -6,6 +6,9 @@ def plotCity(df, city):
     if city == '苏州':
         df_select = df.loc[~df['下辖区'].isin(set(['昆山', '吴江']))]
         gp = df_select.groupby(['成交时间'])['成交价(元/平)']
+    if city == '天津':
+        df_select = df.loc[df['下辖区'].isin(set(['和平', '北辰', '东丽', '红桥', '河北', '西青', '河东', '河西', '南开']))]
+        gp = df_select.groupby(['成交时间'])['成交价(元/平)']
     else:
         gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
@@ -26,9 +29,9 @@ ma_length = 30
 start_date = '2015-01-01'
 
 cityList = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '宁波', '合肥', '成都','重庆','武汉',
-            '西安','石家庄','苏州','南京', '大连', '青岛', '无锡', '保定', '温州', '廊坊', '东莞']
+            '西安','石家庄','苏州','南京', '大连', '青岛', '无锡', '保定', '温州', '廊坊', '东莞', '天津']
 #cityList = ['北京', '上海','深圳']
-#cityList = ['苏州', '无锡']
+#cityList = ['天津']
 data = {}
 res = {}
 districtRes = {}

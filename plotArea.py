@@ -3,9 +3,13 @@ from common import read, plot
 import pandas as pd
 import sys
 import os
+keCity = ['天津']
 def plotArea(city, area):
-    cmd = 'python2.7 spider/chengJiaoSpider.py %s %s'%(city, area)
-    os.system(cmd)
+    if city in keCity:
+        cmd = 'python2.7 spider/chengJiaoSpiderKe.py %s %s'%(city, area)
+    else:
+        cmd = 'python2.7 spider/chengJiaoSpider.py %s %s'%(city, area)
+    #os.system(cmd)
     df = read(area)
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})

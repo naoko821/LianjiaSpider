@@ -88,14 +88,15 @@ def read(city):
             dfs.append(df)
 
     df = pd.concat(dfs)
-    print(len(df))
+    print('raw count:', len(df))
     df = df.drop_duplicates(subset=['链家编号'])
-    print(len(df))
+    print('count after drop duplicates', len(df))
     df = df.loc[df['成交价(元/平)']> 1000]
-    print(len(df))
+    print('count after drop less than 1000', len(df))
     if city not in ['重庆', 'allcq', '南京']:
         df = df.loc[~df['土地年限'].str.contains('40')]
         df = df.loc[~df['土地年限'].str.contains('50')]
+    print('count after drop 40, 50', len(df))
     df = df.set_index('链家编号')
     #print(len(df))
     return df
@@ -133,7 +134,7 @@ def get_moving_average(res, ma_length, keep_all = False):
     last_index = 0
     if keep_all == False:
         for i in range(len(volume_ma)):
-            if volume_ma[i] < ma_length / 2:
+            if volume_ma[i] < ma_length / 6:
                 last_index = i
     volume_ma = volume_ma[last_index+1:]
     median_ma = median_ma[last_index+1:]
