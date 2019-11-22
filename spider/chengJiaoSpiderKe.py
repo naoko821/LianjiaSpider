@@ -13,7 +13,7 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 from pypinyin import lazy_pinyin
-cityMap = {'天津':'tj', '北京':'bj'}
+cityMap = {'天津':'tj'}
 districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口'],
 '天津': ['和平',
  '南开',
@@ -92,9 +92,6 @@ class chengJiaoInfo:
     def open_url(self, re_get, index):
         print(re_get, index)
         res = self.requestUrlForRe(re_get)
-        fp = open('page.html','w')
-        fp.write(res.text)
-        fp.close()
         if res.status_code == 200:
             soup = BeautifulSoup(res.text, 'lxml')
             self.infos['网址'] = re_get
