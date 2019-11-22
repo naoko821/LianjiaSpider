@@ -17,6 +17,9 @@ html_tmp = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ht
 </head>
 <body style="align-content: center;">
 <p>
+{tablehtml}
+</p>
+<p>
     {imghtml}
 <img alt="公众号" src="http://www.yeshiwei.com/gongzhonghao.jpeg">
 </p>
@@ -24,9 +27,9 @@ html_tmp = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "ht
 </html>'''
 img_html_tmp = '<img alt="{city}" src="http://www.yeshiwei.com/fig/{dirname}">'
 import os
+import pandas as pd
 rootDir = 'fig/'
 dirNames = os.listdir(rootDir)
-
 def makeCity(city):
     print(city)
     dirName = os.path.join(rootDir, city)
@@ -43,6 +46,15 @@ def makeCity(city):
         img_html += img_html_ele
     html = html_tmp.replace('{标题}', city + '分城区房价走势图')
     html = html.replace('{imghtml}', img_html)
+    try:
+        if city == 'allcity':
+            df = pd.read_excel('rank/城市排名.xlsx')
+        else:
+            df = pd.read_excel('rank/%s区域排名.xlsx'%city)
+        html = html.replace('{tablehtml}', df.to_html())
+    except Exception as e:
+        print(e)
+        html = html.replace('{tablehtml}', "")
     fp = open('fangjia/%s.html'%city, 'w')
     fp.write(html)
     fp.close()
