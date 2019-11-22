@@ -7,6 +7,7 @@ def plotArea(city, area):
     df = read(city)
     df = df.dropna(subset = ['小区'])
     df = df.loc[df['小区'].str.contains(area)]
+    print('data count:', len(df))
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
     res = res.iloc[:len(res),:]
