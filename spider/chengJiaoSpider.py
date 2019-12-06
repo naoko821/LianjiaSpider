@@ -17,8 +17,9 @@ cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'
            '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf',
           '石家庄':'sjz', '重庆':'cq', '西安':'xa', '青岛':'qd', '南京':'nj',
           '苏州':'su','大连':'dl', '无锡':'wx', '武汉':'wh', '保定':'bd', '温州':'wz',
-            '南通':'nt', '廊坊':'lf', '东莞':'dg'}
-districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口']}
+            '南通':'nt', '廊坊':'lf', '东莞':'dg','济南':'jn'}
+districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口'],
+                '济南':['历下', '天桥', '市中', '槐荫', '高新', '长清', '历城', '章丘']}
 
 class chengJiaoInfo:
     # 初始化构造函数
@@ -184,6 +185,7 @@ def getAllXiaoqu(city):
     
 def getAllDistrict(city):
     districtList = districtMap[city]
+    print(districtList)
     cityCode = cityMap[city]
     paramList = zip([cityCode] * len(districtList), districtList)
     p = Pool()

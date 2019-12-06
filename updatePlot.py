@@ -2,6 +2,7 @@ from common import read
 from common import plot_df, plot_district, plot
 import pandas as pd
 import numpy as np
+from setting import cityList
 def plotCity(df, city):
     if city == '苏州':
         df_select = df.loc[~df['下辖区'].isin(set(['昆山', '吴江']))]
@@ -28,10 +29,8 @@ MA = True
 ma_length = 30
 start_date = '2015-01-01'
 
-cityList = ['北京', '上海', '深圳', '杭州', '广州', '长沙', '厦门', '宁波', '合肥', '成都','重庆','武汉',
-            '西安','石家庄','苏州','南京', '大连', '青岛', '无锡', '保定', '温州', '廊坊', '东莞', '天津']
 #cityList = ['北京', '上海','深圳']
-#cityList = ['天津']
+#cityList = ['济南']
 data = {}
 res = {}
 districtRes = {}
