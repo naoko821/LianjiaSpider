@@ -5,7 +5,7 @@ import numpy as np
 from setting import cityList
 def plotCity(df, city):
     if city == '苏州':
-        df_select = df.loc[~df['下辖区'].isin(set(['昆山', '吴江']))]
+        df_select = df.loc[df['下辖区'].isin(set(['吴中', '姑苏', '工业园区','高新']))]
         gp = df_select.groupby(['成交时间'])['成交价(元/平)']
     if city == '天津':
         df_select = df.loc[df['下辖区'].isin(set(['和平', '北辰', '东丽', '红桥', '河北', '西青', '河东', '河西', '南开']))]
@@ -30,7 +30,7 @@ ma_length = 30
 start_date = '2015-01-01'
 
 #cityList = ['北京', '上海','深圳']
-#cityList = ['济南']
+#cityList = ['北京']
 data = {}
 res = {}
 districtRes = {}
@@ -52,12 +52,14 @@ def makeTable(res, cityLevel='城市', cityName = None):
     change = {}
     monthChange = {}
     drawDown = {}
+    updateTime = {}
     for city in res.keys():
         print("compute", city, "of", cityName)
         if res[city] is None or len(res[city]) < 30:
             continue
         median[city] = int(res[city]['median_price'][-1])
         mean[city] = int(res[city]['mean_price'][-1])
+        updateTime[city] = res[city].index[-1]
         try:
             yearChange[city] = "%.2f%%"%(100 * (res[city]['median_price'][-1]/res[city]['median_price'][-365] - 1))
         except:
@@ -73,10 +75,11 @@ def makeTable(res, cityLevel='城市', cityName = None):
         drawDown[city] = "%.2f%%"%(100 * (res[city]['median_price'][-1]/np.nanmax(res[city]['median_price'])- 1))
     cityRank = pd.DataFrame({'中位数':median, '均值':mean, 
                          '近一年':yearChange,
-                         '近半年':change, '近一个月':monthChange, '前高以来':drawDown}).sort_values('中位数', ascending = False)
+                         '近半年':change, '近一个月':monthChange, '前高以来':drawDown,
+                         '最新数据日期':updateTime}).sort_values('中位数', ascending = False)
     cityRank[cityLevel] = cityRank.index
     cityRank.index = range(1, len(cityRank) + 1)
-    cityRank = cityRank.loc[:,[cityLevel, '中位数', '均值', '近一年', '近半年','近一个月', '前高以来']]
+    cityRank = cityRank.loc[:,[cityLevel, '中位数', '均值', '近一年', '近半年','近一个月', '前高以来', '最新数据日期']]
     if not os.path.exists('rank'):
         os.makedirs('rank')
     if cityName == None:
