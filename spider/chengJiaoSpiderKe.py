@@ -13,7 +13,7 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 from pypinyin import lazy_pinyin
-cityMap = {'天津':'tj'}
+cityMap = {'天津':'tj','郑州':'zz'}
 districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口'],
 '天津': ['和平',
  '南开',
@@ -31,7 +31,26 @@ districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山',
  '宝坻',
  '蓟州',
  '海河教育园区',
- '静海']}
+ '静海'],
+'郑州':[
+ '中原',
+ '管城回族区'],
+'郑州1':['二七',
+ '郑东新区',
+ '荥阳市',
+ '新郑市',
+ '上街区',
+ '巩义市',
+ '新密市',
+ '登封市',
+ '中牟县',
+ '经开区',
+ '高新',
+ '航空港区',
+ '中原',
+ '管城回族区',
+ '惠济',
+ '金水']}
 
 
 class chengJiaoInfo:
@@ -207,7 +226,7 @@ def getAllXiaoqu(city):
         done = os.listdir(targetDir)
         xiaoquList = list(set(xiaoquList) - set(done))
     print(len(xiaoquList), cityCode)
-    p = Pool()
+    p = Pool(20)
     paramList = zip([cityCode] * len(xiaoquList), xiaoquList)
     p.map(getXiaoqu, paramList)
  
@@ -216,7 +235,7 @@ def getAllDistrict(city):
     cityCode = cityMap[city]
     paramList = zip([cityCode] * len(districtList), districtList)
     p = Pool()
-    if city == '天津':
+    if city in ['天津','郑州']:
         p.map(getTJDistrict, paramList)
     else:
         p.map(getXiaoqu, paramList) 
@@ -227,8 +246,8 @@ if __name__ == '__main__':
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
-        p = Pool()
-        p.map(getCity, city_list)
+        for city in city_list:
+            getCity(city)
     elif len(sys.argv) == 2:
         area = sys.argv[1]
         url = 'https://bj.ke.com/chengjiao/pg{}rs%s/'%area

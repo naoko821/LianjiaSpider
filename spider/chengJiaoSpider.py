@@ -13,13 +13,29 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 
-cityMap = {'北京':'bj','上海':'sh', '深圳':'sz', '杭州':'hz', '广州':'gz', 
+cityMap = {'北京':'bj','上海':'sh', '杭州':'hz', '深圳':'sz', '广州':'gz', 
            '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf',
           '石家庄':'sjz', '重庆':'cq', '西安':'xa', '青岛':'qd', '南京':'nj',
           '苏州':'su','大连':'dl', '无锡':'wx', '武汉':'wh', '保定':'bd', '温州':'wz',
-            '南通':'nt', '廊坊':'lf', '东莞':'dg','济南':'jn'}
+            '南通':'nt', '廊坊':'lf', '东莞':'dg','济南':'jn', '长春':'cc'}
 districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口'],
-                '济南':['历下', '天桥', '市中', '槐荫', '高新', '长清', '历城', '章丘']}
+                '济南':['历下', '天桥', '市中', '槐荫', '高新', '长清', '历城', '章丘'],
+            '长春':['九台区',
+ '二道区',
+ '农安县',
+ '净月区',
+ '南关区',
+ '双阳区',
+ '宽城区',
+ '德惠市',
+ '朝阳区',
+ '榆树市',
+ '汽车产业开发区',
+ '经开北区',
+ '经开区',
+ '绿园区',
+ '高新北区',
+ '高新区']}
 
 class chengJiaoInfo:
     # 初始化构造函数
@@ -197,8 +213,8 @@ if __name__ == '__main__':
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
-        p = Pool()
-        p.map(getCity, city_list)
+        for city in city_list:
+            getCity(city)
     elif len(sys.argv) == 2:
         area = sys.argv[1]
         url = 'https://bj.lianjia.com/chengjiao/pg{}rs%s/'%area
