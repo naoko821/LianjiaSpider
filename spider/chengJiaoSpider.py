@@ -69,8 +69,10 @@ class chengJiaoInfo:
             try:
                 print('page', i)
                 url_count = self.get_allurl(i)
-                if url_count == 0:
-                    break
+                while url_count == 0:
+                    print("error get item url.", i)
+                    self.proxyServer = self.getIpProxy.get_random_ip()
+                    url_count = self.get_allurl(i)
                 if self.page % 5 == 0:
                     self.saveResult()
             except Exception as e:
