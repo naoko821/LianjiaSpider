@@ -5,6 +5,7 @@ import requests
 import sys
 import lxml
 import datetime
+import time
 import os
 from multiprocessing import Pool
 from bs4 import BeautifulSoup
@@ -12,6 +13,7 @@ from generate_excle import generate_excle
 from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
+from setting import cityList
 
 cityMap = {'北京':'bj','上海':'sh', '杭州':'hz', '深圳':'sz', '广州':'gz', 
            '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf',
@@ -63,21 +65,25 @@ class chengJiaoInfo:
     def start(self):
         self.generate_excle.addSheetExcle(u'在售列表')
         user_in_nub = 100#input('输入生成页数：')
-
         for i in self.generate_allurl(user_in_nub):
             try:
+                print('page', i)
                 url_count = self.get_allurl(i)
                 if url_count == 0:
                     break
-                print(i)
+                if self.page % 5 == 0:
+                    self.saveResult()
             except Exception as e:
                 print(i, e, 'failed')
+        self.saveResult()
+
+    def saveResult(self):
         date = str(datetime.datetime.now().date())
         dirName = 'data/chengjiao-%s'%self.city
         if not os.path.exists(dirName):
             os.makedirs(dirName)
         self.generate_excle.saveExcle('%s/%s-%s.xls'%(dirName, date, self.city.split('/')[-1]))
-
+    
     def get_allurl(self, generate_allurl):
         geturl = self.requestUrlForRe(generate_allurl)
         url_count = 0
@@ -146,13 +152,12 @@ class chengJiaoInfo:
                 tempProxyServer = self.getIpProxy.get_random_ip()
             else:
                 tempProxyServer = self.proxyServer
-
             proxy_dict = {
                 tempProxyServer[0]: tempProxyServer[1]
             }
             tempUrl = requests.get(url, headers=hds[random.randint(0, len(hds) - 1)], proxies=proxy_dict)
-
             code = tempUrl.status_code
+            #print tempUrl.text.decode('gbk')
             if code >= 200 or code < 300:
                 self.proxyServer = tempProxyServer
                 return tempUrl
@@ -209,7 +214,10 @@ def getAllDistrict(city):
     
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        city_list = cityMap.keys()
+        city_list = cityList
+        for city in cityMap.keys():
+            if not city in city_list:
+                city_list.append(city)
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
