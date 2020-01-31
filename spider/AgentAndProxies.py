@@ -7,7 +7,10 @@ import re
 import requests
 import json
 
-
+hds = [{'User-Agent':'MobileSafari/604.1 CFNetwork/978.0.7 Darwin/18.7.0'}, 
+        {'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0'},
+        {'User-Agent':'MobileSafari/604.1 CFNetwork/978.0.7 Darwin/18.6.0'},
+        {'User-Agent':'Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko; googleweblight) Chrome/38.0.1025.166 Mobile Safari/535.19'}]
 hds = [{'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}, \
        {
            'User-Agent': 'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.12 Safari/535.11'}, \
@@ -26,7 +29,6 @@ hds = [{'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.
            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'}, \
        {'User-Agent': 'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11'}, \
        {'User-Agent': 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11'}]
-
 
 # geturl = requests.get('http://www.xicidaili.com/', headers=hds[random.randint(0, len(hds) - 1)])
 #
@@ -79,8 +81,12 @@ class GetIpProxy():
             return False
         else:
             code = response.status_code
-            if code >= 200 or code < 300:
+            if 'sec_tech@ke.com' in response.text:
+                print("[有返回，但是触发人机识别]代理 {0} 端口号及ip不可用".format(proxy_url))
+                return False
+            elif code >= 200 or code < 300:
                 print("代理  {0} 端口号及ip 可用".format(proxy_url))
+                #print(code, response.text)
                 return True
             else:
                 print("[有返回，但是状态码异常]代理 {0} 端口号及ip不可用".format(proxy_url))
@@ -102,12 +108,11 @@ class GetIpProxy():
                 tempProxyServer = self.get_random_ip()
             else:
                 tempProxyServer = self.proxyServer
-
             proxy_dict = {
                 tempProxyServer[0]: tempProxyServer[1]
             }
             tempUrl = requests.get(url, headers=headers, proxies=proxy_dict)
-
+            
             code = tempUrl.status_code
             if code >= 200 or code < 300:
                 self.proxyServer = tempProxyServer
