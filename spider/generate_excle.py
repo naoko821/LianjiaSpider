@@ -27,7 +27,10 @@ class generate_excle:
 
     def saveExcle(self, name):
         # u'LianJiaSpider.xls'
-        self.wb.save(name)
+        if len(self.ws.rows.items()) > 0:
+            self.wb.save(name)
+        else:
+            print "Got no data."
 
     def addSheetExcle(self, sheetName):
         self.ws = self.wb.add_sheet(sheetName)
