@@ -96,7 +96,10 @@ class chengJiaoInfo:
             url_count = len(re_get)
             for index in range(len(re_get)):
                 print re_get[index]
-                self.open_url(re_get[index], index)
+                url_status = self.open_url(re_get[index], index)
+                while url_status == False:
+                    self.proxyServer = self.getIpProxy.get_random_ip()
+                    url_status = self.open_url(re_get[index], index)
                 print(re_get[index])
         return url_count
 
@@ -104,6 +107,8 @@ class chengJiaoInfo:
         print(re_get, index)
         res = self.requestUrlForRe(re_get)
         if res.status_code == 200:
+            if 'sec_tech@ke.com' in res.text:
+                return False
             soup = BeautifulSoup(res.text, 'lxml')
             self.infos['网址'] = re_get
             self.infos['标题'] = soup.title.text.split('_')[0]
@@ -144,7 +149,7 @@ class chengJiaoInfo:
             else:
                 row = row + 1
                 self.wirte_source_data(row)
-        return self.infos
+        return True
 
     # 封装统一request请求,采取动态代理和动态修改User-Agent方式进行访问设置,减少服务端手动暂停的问题
     def requestUrlForRe(self, url):
@@ -224,6 +229,8 @@ if __name__ == '__main__':
             spider = chengJiaoInfo(city)
             spider.start()
         for city in city_list:
+            if city in ['深圳']:
+                continue
             getCity(city)
     elif len(sys.argv) == 2:
         area = sys.argv[1]
