@@ -2,7 +2,7 @@ from common import read
 from common import plot_df, plot_district, plot
 import pandas as pd
 import numpy as np
-from setting import cityList
+from spider.setting import cityList
 def plotCity(df, city):
     if city == '苏州':
         df_select = df.loc[df['下辖区'].isin(set(['吴中', '姑苏', '工业园区','高新']))]
