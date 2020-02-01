@@ -13,6 +13,7 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 from pypinyin import lazy_pinyin
+from checkStatus import check
 cityMap = {'天津':'tj','郑州':'zz'}
 districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山', '开发区', '高新园区', '普兰店', '旅顺口'],
 '天津': ['和平',
@@ -82,11 +83,17 @@ class chengJiaoInfo:
         for i in self.generate_allurl(user_in_nub):
             try:
                 count = self.get_allurl(i)
-                print(i)
-                if count == 0:
-                    break
+                while url_count == 0:
+                    print("error get item url.", i)
+                    self.proxyServer = self.getIpProxy.get_random_ip()
+                    url_count = self.get_allurl(i)
+                if self.page % 5 == 0:
+                    self.saveResult()
             except Exception as e:
                 print(i, e, 'failed')
+        self.saveResult()
+
+    def saveResult(self):
         date = str(datetime.datetime.now().date())
         dirName = 'data/chengjiao-%s'%self.city
         if not os.path.exists(dirName):
@@ -104,7 +111,10 @@ class chengJiaoInfo:
                 print re_get[index]
                 if re_get[index].startswith('http'):
                     count += 1
-                    self.open_url(re_get[index], index)
+                    url_status = self.open_url(re_get[index], index)
+                    while url_status == False:
+                        self.proxyServer = self.getIpProxy.get_random_ip()
+                        url_status = self.open_url(re_get[index], index)
                 print(re_get[index])
         return count
 
@@ -112,6 +122,8 @@ class chengJiaoInfo:
         print(re_get, index)
         res = self.requestUrlForRe(re_get)
         if res.status_code == 200:
+            if 'sec_tech@ke.com' in res.text:
+                return False
             soup = BeautifulSoup(res.text, 'lxml')
             self.infos['网址'] = re_get
             self.infos['标题'] = soup.title.text.split('_')[0]
@@ -160,7 +172,7 @@ class chengJiaoInfo:
             else:
                 row = row + 1
                 self.wirte_source_data(row)
-        return self.infos
+        return True
 
     # 封装统一request请求,采取动态代理和动态修改User-Agent方式进行访问设置,减少服务端手动暂停的问题
     def requestUrlForRe(self, url):
@@ -243,6 +255,15 @@ def getAllDistrict(city):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         city_list = cityMap.keys()
+        done, unfinished = check()
+        for city in cityMap.keys():
+            if not city in city_list:
+                city_list.append(city)
+        city_list_tmp = city_list
+        city_list = []
+        for city in city_list_tmp:
+            if city in unfinished:
+                city_list.append(city)
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
