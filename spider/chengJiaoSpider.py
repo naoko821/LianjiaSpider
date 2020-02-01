@@ -14,6 +14,7 @@ from AgentAndProxies import hds
 from AgentAndProxies import GetIpProxy
 from model.ElementConstant import ElementConstant
 from setting import cityList
+from checkStatus import check
 
 cityMap = {'北京':'bj','上海':'sh', '杭州':'hz', '深圳':'sz', '广州':'gz', 
            '宁波':'nb', '长沙':'cs', '厦门':'xm', '成都':'cd', '合肥':'hf',
@@ -222,14 +223,20 @@ def getAllDistrict(city):
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         city_list = cityList
+        done, unfinished = check()
         for city in cityMap.keys():
             if not city in city_list:
+                city_list.append(city)
+        city_list_tmp = city_list
+        city_list = []
+        for city in city_list_tmp:
+            if city in unfinished:
                 city_list.append(city)
         def getCity(city):
             spider = chengJiaoInfo(city)
             spider.start()
         for city in city_list:
-            if city in ['深圳']:
+            if city in ['北京', '上海', '深圳', '杭州', '广州']:
                 continue
             getCity(city)
     elif len(sys.argv) == 2:

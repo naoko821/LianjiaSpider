@@ -82,7 +82,7 @@ class chengJiaoInfo:
 
         for i in self.generate_allurl(user_in_nub):
             try:
-                count = self.get_allurl(i)
+                url_count = self.get_allurl(i)
                 while url_count == 0:
                     print("error get item url.", i)
                     self.proxyServer = self.getIpProxy.get_random_ip()
