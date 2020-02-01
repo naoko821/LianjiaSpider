@@ -236,7 +236,7 @@ if __name__ == '__main__':
             spider = chengJiaoInfo(city)
             spider.start()
         for city in city_list:
-            if city in ['北京', '上海', '深圳', '杭州', '广州']:
+            if city in ['深圳']:
                 continue
             getCity(city)
     elif len(sys.argv) == 2:
