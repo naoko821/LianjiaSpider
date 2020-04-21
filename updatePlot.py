@@ -3,6 +3,7 @@ from common import plot_df, plot_district, plot
 import pandas as pd
 import numpy as np
 from spider.setting import cityList
+from weasyprint import HTML
 def plotCity(df, city):
     if city == '苏州':
         df_select = df.loc[df['下辖区'].isin(set(['吴中', '姑苏', '工业园区','高新']))]
@@ -15,7 +16,7 @@ def plotCity(df, city):
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
     res = res.iloc[:len(res),:]
     title = city
-    res = plot(res, city, title, MA, ma_length, start_date)
+    res = plot(res, city, title, MA, ma_length, start_date, False, True)
     return res
 def plotAllDistrict(df, city):
     districts = list(df['下辖区'].unique())
@@ -84,6 +85,7 @@ def makeTable(res, cityLevel='城市', cityName = None):
         os.makedirs('rank')
     if cityName == None:
         filename = 'rank/城市排名.xlsx'
+        imgfilename = 'fig/allcity/table.png'
         for index, row in cityRank.iterrows():
             city = row[cityLevel]
             index = int(index)
@@ -91,7 +93,11 @@ def makeTable(res, cityLevel='城市', cityName = None):
             os.system(cmd)
     else:
         filename = 'rank/%s区域排名.xlsx'%cityName
+        imgfilename = 'fig/%s/table.png'%cityName
     cityRank.to_excel(filename)
+    cityRank.to_html('table.html')
+    #HTML('table.html').write_png(imgfilename)
+
 makeTable(res)
 for city in districtRes.keys():
     makeTable(districtRes[city], '城区', city)

@@ -7,7 +7,7 @@ def check():
     unfinished = []
     for city in cityList:
         filename = "data/chengjiao-%s/%s-%s.xls"%(city, today, city)
-        print(filename)
+        #print(filename)
         if os.path.exists(filename):
             done.append(city)
         else:

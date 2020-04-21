@@ -38,7 +38,7 @@ districtMap = {'大连':['甘井子', '沙河口', '西岗', '金州', '中山',
  '经开区',
  '绿园区',
  '高新北区',
- '高新区']}
+ '高新区'], '深圳':['南山区', '福田区', '宝安区', '龙华区', '罗湖区', '光明区', '盐田区', '龙岗区', '坪山区', '大鹏新区']}
 
 class chengJiaoInfo:
     # 初始化构造函数
@@ -217,8 +217,8 @@ def getAllDistrict(city):
     print(districtList)
     cityCode = cityMap[city]
     paramList = zip([cityCode] * len(districtList), districtList)
-    p = Pool()
-    p.map(getXiaoqu, paramList) 
+    for p in paramList:
+        getXiaoqu(p)  
     
 if __name__ == '__main__':
     if len(sys.argv) == 1:
@@ -236,8 +236,6 @@ if __name__ == '__main__':
             spider = chengJiaoInfo(city)
             spider.start()
         for city in city_list:
-            if city in ['深圳']:
-                continue
             getCity(city)
     elif len(sys.argv) == 2:
         area = sys.argv[1]

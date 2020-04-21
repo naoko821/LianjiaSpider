@@ -1,0 +1,21 @@
+<!--pages/fangjia/fangjia.wxml-->
+<view class="container">
+
+  <!-- 导航 -->
+  <view class="list">
+    <view class="list-item">
+      <text class="request-text">房价走势</text>
+    </view>
+    <view class="list-item">
+    {bottons}
+    </view>
+  </view>
+
+  {citydata}
+
+    <div class="nav">
+      <button class="next" size="mini" type="default" bindtap="goHome">回到首页</button>
+    </div>
+  </view>
+
+</view>
