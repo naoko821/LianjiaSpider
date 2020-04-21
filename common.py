@@ -1,4 +1,5 @@
 import pandas as pd
+imgfilename = 'table.png'
 import numpy as np
 import os
 import datetime
@@ -21,7 +22,7 @@ def read(city):
             #print(fullPath)
             if f.endswith('.xls'):
                 dfs.append(pd.read_excel(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
-                                                                              '链家编号':str}))
+                                                                              '链家编号':str, '产权年限':str}))
             if f.endswith('.csv'):
                 dfs.append(pd.read_csv(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
                                                                             '链家编号':str}))
@@ -94,8 +95,8 @@ def read(city):
     df = df.loc[df['成交价(元/平)']> 1000]
     print('count after drop less than 1000', len(df))
     if city not in ['重庆', 'allcq', '南京']:
-        df = df.loc[~df['土地年限'].str.contains('40')]
-        df = df.loc[~df['土地年限'].str.contains('50')]
+        df = df.loc[~df['土地年限'].str.contains('40', na = False)]
+        df = df.loc[~df['土地年限'].str.contains('50', na = False)]
     print('count after drop 40, 50', len(df))
     df = df.set_index('链家编号')
     #print(len(df))
@@ -221,7 +222,7 @@ def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = Non
                         'median_price':gp['成交价(元/平)'].median()})
     res = res.iloc[:len(res),:]
     title = district
-    return plot(res, city, title, MA, ma_length, start_date)
+    return plot(res, city, title, MA, ma_length, start_date, False, True)
 def plot_df(df, city, title, MA, ma_length, start_date = None, force = False):  
     gp = df.groupby(['成交时间'])['成交价(元/平)']
     res=pd.DataFrame({"volume":gp.size(),"median_price":gp.median(), "mean_price":gp.mean()})
