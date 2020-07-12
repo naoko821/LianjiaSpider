@@ -120,6 +120,8 @@ def getCityHTML(city):
                 districts_sorted.append(d)
         districts = districts_sorted
     for district in districts:
+        if not district.endswith('.png'):
+            continue
         url = 'http://www.yeshiwei.com/fig/{city}/{district}'.format(city = city, district = district)
         image_html += image_template.format(url=url)
     html = open('fangjia_template.html').read().format(city = city, table = table_html, image = image_html)
@@ -237,5 +239,6 @@ fp.write(wxml)
 fp.close()
 def exec(cmd):
     os.system(cmd)
+getCityHTML('allcity')
 exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
 exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fangjia')
