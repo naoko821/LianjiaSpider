@@ -11,6 +11,8 @@ from pypinyin import pinyin
 import numpy as np
 from matplotlib.font_manager import FontProperties
 font=FontProperties(fname='font/Songti.ttc',size=18)
+from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
+import matplotlib.image as mpimg
 
 def read(city):
     dfs = []
@@ -191,8 +193,17 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
     ax0.legend(['中位数=%.0f'%res['median_price'][-1],'均价=%.0f'%res['mean_price'][-1]], prop = font)
+    
+
     x1,x2,y1,y2 = ax0.axis()
     ax0.axis((x1,x2,0,y2))
+    
+    #插入二维码
+    qrcode = mpimg.imread('wechatqrcode.png')
+    imagebox = OffsetImage(qrcode, zoom=0.5)
+    ab = AnnotationBbox(imagebox, (0.2*x2, 0.2*y2))
+    ax0.add_artist(ab)
+    
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
@@ -211,6 +222,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     plt.savefig(os.path.join(dir_name, title +'.png'))
     #plt.show()
     plt.close()
+    res.to_excel('data/trend/%s-%s.xlsx'%(city, title))
     return res
 
 def plot_district(df, city, district ='朝阳', ma_length = -1, start_date = None):
