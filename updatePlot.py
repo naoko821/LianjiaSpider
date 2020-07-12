@@ -73,7 +73,9 @@ def makeTable(res, cityLevel='城市', cityName = None):
             monthChange[city] = "%.2f%%"%(100 * (res[city]['median_price'][-1]/res[city]['median_price'][-30] - 1))
         except:
             monthChange[city] = '数据不足'
-        drawDown[city] = "%.2f%%"%(100 * (res[city]['median_price'][-1]/np.nanmax(res[city]['median_price'])- 1))
+        df = res[city]
+        df = df.loc[df['volume'] > df['volume'].mean() * 0.5, :]
+        drawDown[city] = "%.2f%%"%(100 * (df['median_price'][-1]/np.nanmax(df['median_price'])- 1))
     cityRank = pd.DataFrame({'中位数':median, '均值':mean, 
                          '近一年':yearChange,
                          '近半年':change, '近一个月':monthChange, '前高以来':drawDown,
