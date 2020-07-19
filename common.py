@@ -192,7 +192,8 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     ax0 = plt.subplot(gs[0])
     ax0.plot(res['median_price'])
     ax0.plot(res['mean_price'])
-    ax0.legend(['中位数=%.0f'%res['median_price'][-1],'均价=%.0f'%res['mean_price'][-1]], prop = font)
+    ax0.legend(['%d日中位数=%.0f'%(ma_length, res['median_price'][-1]),
+                '%d日均价=%.0f'%(ma_length, res['mean_price'][-1])], prop = font)
     
 
     x1,x2,y1,y2 = ax0.axis()
@@ -207,7 +208,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
-    plt.title(title, fontproperties = font)
+    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取爬虫和数据分析源码', fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
