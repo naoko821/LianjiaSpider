@@ -95,6 +95,7 @@ def read(city):
     df = df.drop_duplicates(subset=['链家编号'])
     print('count after drop duplicates', len(df))
     df = df.loc[df['成交价(元/平)']> 1000]
+    df = df.loc[df['成交价(元/平)']< 100000]
     print('count after drop less than 1000', len(df))
     if city not in ['重庆', 'allcq', '南京']:
         df = df.loc[~df['土地年限'].str.contains('40', na = False)]
@@ -208,7 +209,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
-    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取爬虫和数据分析源码', fontproperties = font)
+    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取爬虫和数据分析源码以及其他城市房价走势', fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
