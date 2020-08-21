@@ -95,7 +95,7 @@ def read(city):
     df = df.drop_duplicates(subset=['链家编号'])
     print('count after drop duplicates', len(df))
     df = df.loc[df['成交价(元/平)']> 1000]
-    df = df.loc[df['成交价(元/平)']< 100000]
+    df = df.loc[df['成交价(元/平)']< 200000]
     print('count after drop less than 1000', len(df))
     if city not in ['重庆', 'allcq', '南京']:
         df = df.loc[~df['土地年限'].str.contains('40', na = False)]
