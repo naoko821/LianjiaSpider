@@ -209,7 +209,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
-    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取爬虫和数据分析源码以及其他城市房价走势', fontproperties = font)
+    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取其他城市分城区房价走势', fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
