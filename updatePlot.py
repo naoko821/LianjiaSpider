@@ -1,5 +1,6 @@
 from common import read
 from common import plot_df, plot_district, plot
+from common import updateCityTable, render_mpl_table
 import pandas as pd
 import numpy as np
 from spider.setting import cityList
@@ -32,6 +33,7 @@ start_date = '2015-01-01'
 
 #cityList = ['北京', '上海','深圳']
 #cityList = ['北京']
+#cityList = ['深圳']
 data = {}
 res = {}
 districtRes = {}
@@ -97,8 +99,7 @@ def makeTable(res, cityLevel='城市', cityName = None):
         filename = 'rank/%s区域排名.xlsx'%cityName
         imgfilename = 'fig/%s/table.png'%cityName
     cityRank.to_excel(filename)
-    cityRank.to_html('table.html')
-    #HTML('table.html').write_png(imgfilename)
+    render_mpl_table(cityRank, imgfilename, header_columns=0, col_width=2.0) 
 
 makeTable(res)
 for city in districtRes.keys():
