@@ -3,6 +3,7 @@ imgfilename = 'table.png'
 import numpy as np
 import os
 import datetime
+import six
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -13,6 +14,7 @@ from matplotlib.font_manager import FontProperties
 font=FontProperties(fname='font/Songti.ttc',size=18)
 from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
 import matplotlib.image as mpimg
+
 
 def read(city):
     dfs = []
@@ -209,7 +211,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
-    plt.title(title+'--欢迎扫二维码关注公众号"时炜观察"获取其他城市分城区房价走势', fontproperties = font)
+    plt.title(title+'--欢迎扫二维码关注公众号获取其他城市房价走势还有佣金低至万分之一的证券开户', fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
@@ -278,3 +280,49 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     plt.savefig(os.path.join(dir_name, title +'.png'))
     plt.show()
     plt.close()
+
+def render_mpl_table(data, filename, col_width=3.0, row_height=0.625, font_size=24,
+                     header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
+                     bbox=[0, 0, 1, 1], header_columns=0,
+                     ax=None, **kwargs):
+    matplotlib.rcParams['font.sans-serif'] = "Arial Unicode MS"
+    matplotlib.rcParams['font.family'] = "sans-serif"
+    if ax is None:
+        size = (np.array(data.shape[::-1]) + np.array([0, 6])) * np.array([col_width, row_height])
+        matplotlib.rcParams['figure.figsize'] = size
+        gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1]) 
+        ax = plt.subplot(gs[0])
+        ax2 = plt.subplot(gs[1])
+        ax.axis('off')
+    mpl_table = ax.table(cellText=data.values, bbox=bbox, colLabels=data.columns, **kwargs)
+    mpl_table.auto_set_font_size(False)
+    mpl_table.set_fontsize(font_size)
+    for k, cell in  six.iteritems(mpl_table._cells):
+        cell.set_edgecolor(edge_color)
+        if k[0] == 0 or k[1] < header_columns:
+            cell.set_text_props(weight='bold', color='w')
+            cell.set_facecolor(header_color)
+        else:
+            cell.set_facecolor(row_colors[k[0]%len(row_colors) ])
+    qrcode = mpimg.imread('wechatqrcode.png')
+    imagebox = OffsetImage(qrcode, zoom=0.8)
+    ab = AnnotationBbox(imagebox, (0.1, 0.5))
+    ax2.axis("off")
+    ax2.add_artist(ab)
+    ax2.text( 0.3, 0.5, "欢迎扫码关注微信公众号\"时炜观察\"\n获取房价走势图以及在量化投资行业的知识见识分享。\n更有多家低佣A股证券开户，最低低至万分之一。", dict(size=30))
+    plt.tight_layout()
+    plt.savefig(filename)
+    return ax
+
+def updateCityTable():
+    df = pd.read_excel('rank/城市排名.xlsx')
+    ax = render_mpl_table(df, 'fig/city_table.png', header_columns=0, col_width=2.0)
+
+def updateAllTableImage():
+    df = pd.read_excel('rank/城市排名.xlsx')
+    render_mpl_table(df, 'fig/allcity/table.png', header_columns=0, col_width=2.0) 
+    for city in df['城市']:
+        filename = 'rank/%s区域排名.xlsx'%city
+        imgfilename = 'fig/%s/table.png'%city
+        data = pd.read_excel(filename)
+        render_mpl_table(data, imgfilename, header_columns=0, col_width=2.0)
