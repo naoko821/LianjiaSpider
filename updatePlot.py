@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from common import read
 from common import plot_df, plot_district, plot
 from common import updateCityTable, render_mpl_table
