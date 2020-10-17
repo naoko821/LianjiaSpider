@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 imgfilename = 'table.png'
 import numpy as np
@@ -38,13 +39,16 @@ def read(city):
             df = df.drop('Unnamed: 0', axis=1)
         elif 'Unnamed: 0' in df.columns:
             continue
+        if '单价（元/平米）' in df.columns:
+            df['单价（元/平米）'] =  pd.to_numeric(df['单价（元/平米）'], errors="coerce")
         df = df.rename(columns={'单价（元/平米）':'成交价(元/平)','所属小区':'小区','建筑面积：平米':'建筑面积',
                                '浏览(次)':'浏览（次）', '关注(人)':'关注（人）', '带看(次)':'带看（次）',
                                '所属下辖区':'下辖区', '房权所属':'产权所属', '房屋朝向':'朝向','调价（次）':'调价(次)',
                                '建成时间：年':'建成时间', '所属商圈':'商圈', '装修情况':'装修', '成交周期（天）':'成交周期(天)',
                                '房屋户型':'户型','产权年限':'土地年限', '楼层状态':'所在楼层', '挂牌价格（万）':'挂牌价格(万)',
                                '配备电梯':'电梯'})
-        #去掉面积单位
+        dfs.append(df)
+     #去掉面积单位
         try:
             mj = df['建筑面积']
             mj_num = []
@@ -70,6 +74,7 @@ def read(city):
                 time.append(t)
             df['成交时间'] = time
         except:
+            print('成交时间错误')
             pass
         #去掉售价单位
         try:
