@@ -34,7 +34,9 @@ def read(city):
     dfs = []
     #统一格式
     for df in dfs0:
-        if 'Unnamed: 0' in df.columns:
+        if 'Unnamed: 0' in df.columns and '链家编号' in df.columns:
+            df = df.drop('Unnamed: 0', axis=1)
+        elif 'Unnamed: 0' in df.columns:
             continue
         df = df.rename(columns={'单价（元/平米）':'成交价(元/平)','所属小区':'小区','建筑面积：平米':'建筑面积',
                                '浏览(次)':'浏览（次）', '关注(人)':'关注（人）', '带看(次)':'带看（次）',
