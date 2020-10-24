@@ -25,79 +25,78 @@ def read(city):
         for f in files:
             fullPath = os.path.join(root, f)
             #print(fullPath)
+            df = None
             if f.endswith('.xls'):
-                dfs.append(pd.read_excel(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
-                                                                              '链家编号':str, '产权年限':str}))
-            if f.endswith('.csv'):
-                dfs.append(pd.read_csv(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
-                                                                            '链家编号':str}))
-    dfs0 = dfs
-    dfs = []
-    #统一格式
-    for df in dfs0:
-        if 'Unnamed: 0' in df.columns and '链家编号' in df.columns:
-            df = df.drop('Unnamed: 0', axis=1)
-        elif 'Unnamed: 0' in df.columns:
-            continue
-        if '单价（元/平米）' in df.columns:
-            df['单价（元/平米）'] =  pd.to_numeric(df['单价（元/平米）'], errors="coerce")
-        df = df.rename(columns={'单价（元/平米）':'成交价(元/平)','所属小区':'小区','建筑面积：平米':'建筑面积',
-                               '浏览(次)':'浏览（次）', '关注(人)':'关注（人）', '带看(次)':'带看（次）',
-                               '所属下辖区':'下辖区', '房权所属':'产权所属', '房屋朝向':'朝向','调价（次）':'调价(次)',
-                               '建成时间：年':'建成时间', '所属商圈':'商圈', '装修情况':'装修', '成交周期（天）':'成交周期(天)',
-                               '房屋户型':'户型','产权年限':'土地年限', '楼层状态':'所在楼层', '挂牌价格（万）':'挂牌价格(万)',
-                               '配备电梯':'电梯'})
-        dfs.append(df)
-     #去掉面积单位
-        try:
-            mj = df['建筑面积']
-            mj_num = []
-            for m in mj:
-                m = str(m)
-                if '㎡' in m:
-                    m = m[:m.find('㎡')]
-                try:
-                    m = float(m)
-                except:
-                    m = np.nan
-                mj_num.append(m)
-            df['建筑面积'] = mj_num
-        except:
-            pass
-        #统一成交时间格式
-        try:
-            time = []
-            for t in df['成交时间']:
-                t = str(t)
-                if '/' in t:
-                    t = '-'.join(t.split('/'))
-                time.append(t)
-            df['成交时间'] = time
-        except:
-            print('成交时间错误')
-            pass
-        #去掉售价单位
-        try:
-            sj = df['售价(万)']
-            sj_num = []
-            for s in sj:
-                s = str(s)
-                if '万' in s:
-                    s = s[:s.find('万')]
-                if '-' in s:
-                    #print(s)
-                    s = s.split('-')[-1]
-                s = float(s)
-                sj_num.append(s)
-            df['售价(万)'] = sj_num
-        except:
-            pass
-        try:
-            df['成交价(元/平)'] = pd.to_numeric(df['成交价(元/平)'], errors='coerse')
-        except:
-            pass
-        if len(df) > 0:
-            dfs.append(df)
+                df = pd.read_excel(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
+                                                                              '链家编号':str, '产权年限':str})
+            elif f.endswith('.csv'):
+                df = pd.read_csv(fullPath, converters = {'成交价(元/平)':lambda x:float(x),
+                                                                                '链家编号':str})
+            else:
+                continue
+            if len(df) == 0:
+                print('No data in %s' % fullPath )
+                continue
+            if '单价（元/平米）' in df.columns:
+                df['单价（元/平米）'] =  pd.to_numeric(df['单价（元/平米）'], errors="coerce")
+            df = df.rename(columns={'单价（元/平米）':'成交价(元/平)','所属小区':'小区','建筑面积：平米':'建筑面积',
+                                '浏览(次)':'浏览（次）', '关注(人)':'关注（人）', '带看(次)':'带看（次）',
+                                '所属下辖区':'下辖区', '房权所属':'产权所属', '房屋朝向':'朝向','调价（次）':'调价(次)',
+                                '建成时间：年':'建成时间', '所属商圈':'商圈', '装修情况':'装修', '成交周期（天）':'成交周期(天)',
+                                '房屋户型':'户型','产权年限':'土地年限', '楼层状态':'所在楼层', '挂牌价格（万）':'挂牌价格(万)',
+                                '配备电梯':'电梯'})
+            #去掉面积单位
+            try:
+                mj = df['建筑面积']
+                mj_num = []
+                for m in mj:
+                    m = str(m)
+                    if '㎡' in m:
+                        m = m[:m.find('㎡')]
+                    try:
+                        m = float(m)
+                    except:
+                        m = np.nan
+                    mj_num.append(m)
+                df['建筑面积'] = mj_num
+            except:
+                pass
+            #统一成交时间格式
+            try:
+                time = []
+                for t in df['成交时间']:
+                    t = str(t)
+                    if '/' in t:
+                        t = '-'.join(t.split('/'))
+                    time.append(t)
+                df['成交时间'] = time
+            except Exception as e:
+                df.columns
+                print(fullPath)
+                print('成交时间错误', e)
+                pass
+            #去掉售价单位
+            try:
+                sj = df['售价(万)']
+                sj_num = []
+                for s in sj:
+                    s = str(s)
+                    if '万' in s:
+                        s = s[:s.find('万')]
+                    if '-' in s:
+                        #print(s)
+                        s = s.split('-')[-1]
+                    s = float(s)
+                    sj_num.append(s)
+                df['售价(万)'] = sj_num
+            except:
+                pass
+            try:
+                df['成交价(元/平)'] = pd.to_numeric(df['成交价(元/平)'], errors='coerse')
+            except:
+                pass
+            if len(df) > 0:
+                dfs.append(df)
 
     df = pd.concat(dfs)
     print('raw count:', len(df))
@@ -288,7 +287,7 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     plt.show()
     plt.close()
 
-def render_mpl_table(data, filename, col_width=3.0, row_height=0.625, font_size=24,
+def render_mpl_table(data, filename, col_width=3.0, row_height=1 font_size=24,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):
