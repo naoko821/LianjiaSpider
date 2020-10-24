@@ -27,27 +27,7 @@ def plotAllDistrict(df, city):
         if str(district) != 'nan':
             res[district] = plot_district(df, city, district, ma_length, start_date)
     return res
-import os
-MA = True
-ma_length = 30
-start_date = '2015-01-01'
 
-#cityList = ['北京', '上海','深圳']
-#cityList = ['北京']
-#cityList = ['深圳']
-data = {}
-res = {}
-districtRes = {}
-for city in cityList:
-    print(city)
-    df = read(city)
-    data[city] = df
-    res[city] = plotCity(df, city)
-    districtRes[city] = plotAllDistrict(df, city)
-#计算城市排名
-if not os.path.exists('fig/allcity'):
-    os.makedirs('fig/allcity')
-os.system('rm fig/allcity/*')
 def makeTable(res, cityLevel='城市', cityName = None):
     print('compute change of', cityName)
     median = {}
@@ -102,6 +82,28 @@ def makeTable(res, cityLevel='城市', cityName = None):
     cityRank.to_excel(filename)
     render_mpl_table(cityRank, imgfilename, header_columns=0, col_width=2.0) 
 
-makeTable(res)
-for city in districtRes.keys():
+
+import os
+MA = True
+ma_length = 30
+start_date = '2015-01-01'
+#计算城市排名
+if not os.path.exists('fig/allcity'):
+    os.makedirs('fig/allcity')
+os.system('rm fig/allcity/*')
+#cityList = ['北京', '上海','深圳']
+#cityList = ['北京']
+#cityList = ['深圳']
+data = {}
+res = {}
+districtRes = {}
+for city in cityList:
+    print(city)
+    df = read(city)
+    data[city] = df
+    res[city] = plotCity(df, city)
+    districtRes[city] = plotAllDistrict(df, city)
     makeTable(districtRes[city], '城区', city)
+makeTable(res)
+
+    
