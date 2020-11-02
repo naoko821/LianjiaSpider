@@ -102,7 +102,12 @@ def read(city):
     print('raw count:', len(df))
     df = df.drop_duplicates(subset=['链家编号'])
     print('count after drop duplicates', len(df))
-    df = df.loc[df['成交价(元/平)']> 1000]
+    if city in ['北京'，'上海', '深圳']:
+        df = df.loc[df['成交价(元/平)']> 10000]
+    elif city in [ '广州', '杭州']:
+        df = df.loc[df['成交价(元/平)']> 5000]
+    else:
+        df = df.loc[df['成交价(元/平)']> 1000]
     df = df.loc[df['成交价(元/平)']< 200000]
     print('count after drop less than 1000', len(df))
     if city not in ['重庆', 'allcq', '南京']:
@@ -207,7 +212,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
 
     x1,x2,y1,y2 = ax0.axis()
     ax0.axis((x1,x2,0,y2))
-    
+
     #插入二维码
     qrcode = mpimg.imread('wechatqrcode.png')
     imagebox = OffsetImage(qrcode, zoom=0.5)
@@ -287,7 +292,7 @@ def plot_dfs(dfs, title, legends, ma_length = 30, start_date = None):
     plt.show()
     plt.close()
 
-def render_mpl_table(data, filename, col_width=3.0, row_height=1 font_size=24,
+def render_mpl_table(data, filename, col_width=3.0, row_height=1, font_size=24,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):

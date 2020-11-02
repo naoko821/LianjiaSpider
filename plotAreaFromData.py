@@ -9,6 +9,8 @@ def plotArea(city, area, df = None):
         df = read(city)
     df = df.dropna(subset = ['小区'])
     df = df.loc[df['小区'].str.contains(area)]
+    if city == "北京":
+        df = df.loc[df['成交价(元/平)']> 10000]
     print(city, area, 'data count:', len(df))
     if len(df) == 0:
         return df
