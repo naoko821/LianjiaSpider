@@ -73,6 +73,7 @@ class chengJiaoInfo:
                 url_count = self.get_allurl(i)
                 while url_count == 0:
                     print("error get item url.", i)
+                    time.sleep(3600)
                     self.proxyServer = self.getIpProxy.get_random_ip()
                     url_count = self.get_allurl(i)
                 if self.page % 5 == 0:

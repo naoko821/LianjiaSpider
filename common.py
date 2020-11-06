@@ -102,7 +102,7 @@ def read(city):
     print('raw count:', len(df))
     df = df.drop_duplicates(subset=['链家编号'])
     print('count after drop duplicates', len(df))
-    if city in ['北京'，'上海', '深圳']:
+    if city in ['北京', '上海', '深圳']:
         df = df.loc[df['成交价(元/平)']> 10000]
     elif city in [ '广州', '杭州']:
         df = df.loc[df['成交价(元/平)']> 5000]
