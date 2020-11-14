@@ -85,9 +85,11 @@ def getCityHTML(city):
     df = pd.DataFrame()
     if city not in ['房价收入分析']:
         if city == 'allcity':
-            df = pd.read_excel('rank/城市排名.xlsx')
+            df = pd.read_excel('rank/城市排名.xlsx', index = False)
         else:
-            df = pd.read_excel('rank/%s区域排名.xlsx'%city)
+            df = pd.read_excel('rank/%s区域排名.xlsx'%city, index = False)
+        if "Unnamed: 0" in df.columns:
+            df = df.drop(["Unnamed: 0" ], axis = 1)
         table_html = ""
         content = element_temp.format(value='#')
         for col in df.columns:

@@ -9,6 +9,7 @@ os.system('rm fig/allcity/*')
 #cityList = ['北京', '上海','深圳']
 #cityList = ['北京']
 #cityList = ['深圳']
+cityList = ['宁波']
 data = {}
 res = {}
 districtRes = {}
