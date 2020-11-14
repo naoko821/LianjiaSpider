@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from spider.setting import cityList
 from weasyprint import HTML
+import os
 
 MA = True
 ma_length = 30
