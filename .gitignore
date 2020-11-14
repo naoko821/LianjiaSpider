@@ -9,6 +9,7 @@ data/chengjiao-*
 fig
 .DS_store
 *.csv
+data
 data/*
 fangjia/
 *.xlsx

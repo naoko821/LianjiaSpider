@@ -5,6 +5,7 @@
 import random
 import re
 import requests
+import time
 import json
 
 hds = [{'User-Agent':'MobileSafari/604.1 CFNetwork/978.0.7 Darwin/18.7.0'}, 
@@ -83,6 +84,7 @@ class GetIpProxy():
             code = response.status_code
             if 'sec_tech@ke.com' in response.text:
                 print("[有返回，但是触发人机识别]代理 {0} 端口号及ip不可用".format(proxy_url))
+                time.sleep(1800)
                 return False
             elif code >= 200 or code < 300:
                 print("代理  {0} 端口号及ip 可用".format(proxy_url))
