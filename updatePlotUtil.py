@@ -4,7 +4,6 @@ from common import updateCityTable, render_mpl_table
 import pandas as pd
 import numpy as np
 from spider.setting import cityList
-from weasyprint import HTML
 import os
 
 MA = True
