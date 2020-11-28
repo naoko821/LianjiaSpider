@@ -21,8 +21,5 @@ for city in cityList:
     districtRes[city] = plotAllDistrict(df, city)
 
 for city in cityList:
-    cmd = "cp fig/%s/%s.png fig/allcity/"%(city, city)
-
-for city in cityList:
     makeTable(districtRes[city], '城区', city)
 makeTable(res)
