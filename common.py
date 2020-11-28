@@ -68,6 +68,8 @@ def read(city):
                     t = str(t)
                     if '/' in t:
                         t = '-'.join(t.split('/'))
+                    if '成交' in t:
+                        t = t.replace('成交', '').strip()
                     time.append(t)
                 df['成交时间'] = time
             except Exception as e:
