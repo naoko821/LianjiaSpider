@@ -85,9 +85,9 @@ def getCityHTML(city):
     df = pd.DataFrame()
     if city not in ['房价收入分析']:
         if city == 'allcity':
-            df = pd.read_excel('rank/城市排名.xlsx', index = False)
+            df = pd.read_excel('rank/城市排名.xlsx')
         else:
-            df = pd.read_excel('rank/%s区域排名.xlsx'%city, index = False)
+            df = pd.read_excel('rank/%s区域排名.xlsx'%city)
         if "Unnamed: 0" in df.columns:
             df = df.drop(["Unnamed: 0" ], axis = 1)
         table_html = ""
@@ -237,11 +237,11 @@ for city in dirNames:
 if current_line_char_num > 0:
    buttons += button_line_tmp.format(buttons = button_buf)
 wxml = wxml_tmp.format(buttons = buttons, citydata =  wxml_city)
-fp = open('/Users/alex/WeChatProjects/miniprogram-1/miniprogram/pages/fangjia/fangjia.wxml','w')
+fp = open('/home/alex/code/miniprogram-1/miniprogram/pages/fangjia/fangjia.wxml','w')
 fp.write(wxml)
 fp.close()
 def exec(cmd):
     os.system(cmd)
 getCityHTML('allcity')
-exec('rsync -azP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
-exec('rsync -azP fangjia/ root@vps.yeshiwei.com:/var/www/html/fangjia')
+exec('rsync -avzP fig/ root@vps.yeshiwei.com:/var/www/html/fig')
+exec('rsync -avzP fangjia/ root@vps.yeshiwei.com:/var/www/html/fangjia')

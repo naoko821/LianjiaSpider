@@ -13,6 +13,7 @@ from pypinyin import pinyin
 import numpy as np
 from matplotlib.font_manager import FontProperties
 font=FontProperties(fname='font/Songti.ttc',size=18)
+matplotlib.font_manager.fontManager.addfont('font/Songti.ttc')
 from matplotlib.offsetbox import TextArea, DrawingArea, OffsetImage, AnnotationBbox
 import matplotlib.image as mpimg
 
@@ -298,7 +299,7 @@ def render_mpl_table(data, filename, col_width=3.0, row_height=1, font_size=24,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):
-    matplotlib.rcParams['font.sans-serif'] = "Arial Unicode MS"
+    matplotlib.rcParams['font.sans-serif'] = "Songti SC"
     matplotlib.rcParams['font.family'] = "sans-serif"
     if ax is None:
         size = (np.array(data.shape[::-1]) + np.array([0, 6])) * np.array([col_width, row_height])
