@@ -225,7 +225,7 @@ def plot(res, city, title, MA, ma_length, start_date = None, force = False, keep
     resetXticks(ax0, res)
     plt.setp( ax0.get_xticklabels(), visible=False)
     plt.grid(True)
-    plt.title(title+'--欢迎扫二维码关注公众号获取其他城市房价走势还有佣金低至万分之一的证券开户', fontproperties = font)
+    plt.title(title+'--欢迎扫二维码关注公众号获取其他城市房价走势还有低佣金证券开户', fontproperties = font)
     #重画x轴
     ax1 = plt.subplot(gs[1])
     #ax1.bar(res.index, res['volume'])
@@ -323,7 +323,7 @@ def render_mpl_table(data, filename, col_width=3.0, row_height=1, font_size=24,
     ab = AnnotationBbox(imagebox, (0.1, 0.5))
     ax2.axis("off")
     ax2.add_artist(ab)
-    ax2.text( 0.3, 0.5, "欢迎扫码关注微信公众号\"时炜观察\"\n获取房价走势图以及在量化投资行业的知识见识分享。\n更有多家低佣A股证券开户，最低低至万分之一。", dict(size=30))
+    ax2.text( 0.3, 0.5, "欢迎扫码关注微信公众号\"时炜观察\"\n获取房价走势图以及在量化投资行业的知识见识分享。\n更有多家低佣A股证券开户。", dict(size=30))
     plt.tight_layout()
     plt.savefig(filename)
     return ax
