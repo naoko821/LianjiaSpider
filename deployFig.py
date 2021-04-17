@@ -29,7 +29,7 @@ wxml_tmp = '''<!--pages/fangjia/fangjia.wxml-->
 </view>
 '''
 img_wxml_tmp = ''' <view wx:if="{{{{city === '{city}' && district === '{district}'}}}}">
- <image class="image3" src="cloud://shiwei-mwhas.7368-shiwei-mwhas-1301568844/{city}-**-{filename}" mode="scaleToFill"></image>
+ <image class="image3" src="cloud://shiwei-mwhas.7368-shiwei-mwhas-1301568844/{city}-aa-{filename}" mode="scaleToFill"></image>
  </view>
  '''
 button_line_tmp = '''
@@ -183,7 +183,7 @@ def makeWeixin(city):
         current_line_char_num += len(district)
         button_buf += button_wxml_ele
         fileName = os.path.join(rootDir, city, f)
-        targetFileName = city + '-**-' + f
+        targetFileName = city + '-aa-' + f
         cmd = 'cp %s wximg/%s' % (fileName, targetFileName)
         #print(cmd)
         os.system(cmd)
@@ -237,7 +237,7 @@ for city in dirNames:
 if current_line_char_num > 0:
    buttons += button_line_tmp.format(buttons = button_buf)
 wxml = wxml_tmp.format(buttons = buttons, citydata =  wxml_city)
-fp = open('/home/alex/code/miniprogram-1/miniprogram/pages/fangjia/fangjia.wxml','w')
+fp = open('/mnt/c/yeshiwei/miniprogram-1/miniprogram/pages/fangjia/fangjia.wxml','w')
 fp.write(wxml)
 fp.close()
 def exec(cmd):
